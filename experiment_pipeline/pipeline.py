@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 import pickle as pkl
 
-from experiment_pipeline import mse
+from .__init__ import mse
 
 
 def run_ps_experiment(experiment_procedure,
@@ -143,7 +143,7 @@ def run_ps_const_control_experiment_with_files(base_folder,
                fmt="%.4f")
 
 
-def agent_experiment(env, agent_args, agent_train_test_once, n_repeat=1):
+def agent_experiment(env, agent_train_test_once, n_repeat=1):
     trained_agent_s = []
     episodes_length_s = []
     exec_time_s = []
@@ -157,8 +157,7 @@ def agent_experiment(env, agent_args, agent_train_test_once, n_repeat=1):
     for _ in range(n_repeat):
         trained_agent, episodes_length, exec_time, episodes_mse_reward, ep_us, ep_ps, ep_ac, expl_perf, expl_act = \
             agent_train_test_once(
-                env,
-                **agent_args
+                env
             )
         trained_agent_s.append(trained_agent)
         episodes_length_s.append(episodes_length)
@@ -176,7 +175,6 @@ def agent_experiment(env, agent_args, agent_train_test_once, n_repeat=1):
 
 def run_ps_agent_experiment(env_entry_point,
                             agent_train_test_once,
-                            agent_args,
                             n_repeat=1,
                             p_reff=1.3,
                             time_step=1,
@@ -185,7 +183,6 @@ def run_ps_agent_experiment(env_entry_point,
                             **kwargs):
     return run_ps_experiment(lambda env: agent_experiment(
         env=env,
-        agent_args=agent_args,
         agent_train_test_once=agent_train_test_once,
         n_repeat=n_repeat
     ),
@@ -200,7 +197,6 @@ def run_ps_agent_experiment(env_entry_point,
 def run_ps_agent_experiment_with_result_files(base_folder,
                                               n_repeat,
                                               agent_train_test_once,
-                                              agent_args,
                                               time_step,
                                               p_reff,
                                               log_level,
@@ -225,9 +221,8 @@ def run_ps_agent_experiment_with_result_files(base_folder,
     agents, episodes_lengths, exec_times, mse_rewards_s, eps_us, eps_ps, eps_acs, expl_perfs, expl_actns = \
         run_ps_agent_experiment(
             env_entry_point=env_entry_point,
-            n_experiments=n_repeat,
+            n_repeat=n_repeat,
             agent_train_test_once=agent_train_test_once,
-            agent_args=agent_args,
             p_reff=p_reff,
             time_step=time_step,
             log_level=log_level,

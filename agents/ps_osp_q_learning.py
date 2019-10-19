@@ -1,19 +1,21 @@
 import time
 import numpy as np
 from modelicagym.gymalgs.rl import QLearner
+from .discretization import get_state_index, to_bin, get_bins
 from experiment_pipeline import mse
 
 
-def ps_train_qlearning(ps_env,
-                       max_number_of_steps=20,
-                       n_episodes=4,
-                       rand_qtab=False,
-                       learning_rate=0.5,
-                       discount_factor=0.6,
-                       exploration_rate=0.5,
-                       exploration_decay_rate=0.99,
-                       k_s=(1, 2, 3),
-                       visualize=True):
+# osp - one state parameter
+def ps_train_test_osp_ql(ps_env,
+                         max_number_of_steps=20,
+                         n_episodes=4,
+                         rand_qtab=False,
+                         learning_rate=0.5,
+                         discount_factor=0.6,
+                         exploration_rate=0.5,
+                         exploration_decay_rate=0.99,
+                         k_s=(1, 2, 3),
+                         visualize=True):
     """
     Runs one experiment of Q-learning training on power system environment
     :param ps_env: environment RL agent will learn on.
@@ -28,7 +30,7 @@ def ps_train_qlearning(ps_env,
     n_outputs = 1
     n_actions = len(k_s)
 
-    u_bins = _get_bins(0.1, 1.7, 100)
+    u_bins = get_bins(0.1, 1.7, 100)
 
     # ref_bins = _get_bins(1.2, 1.4, 1)
 
@@ -56,48 +58,6 @@ def ps_train_qlearning(ps_env,
            episodes_us, episodes_ps, episodes_actions, exploit_performance, exploit_actions
 
 
-# Internal logic for state discretization
-def _get_bins(lower_bound, upper_bound, n_bins):
-    """
-    Given bounds for environment state variable splits it into n_bins number of bins,
-    taking into account possible values outside the bounds.
-
-    :param lower_bound: lower bound for variable describing state space
-    :param upper_bound: upper bound for variable describing state space
-    :param n_bins: number of bins to receive
-    :return: n_bins-1 values separating bins. I.e. the most left bin is opened from the left,
-    the most right bin is open from the right.
-    """
-    return np.linspace(lower_bound, upper_bound, n_bins + 1)[1:-1]
-
-
-def _to_bin(value, bins):
-    """
-    Transforms actual state variable value into discretized one,
-    by choosing the bin in variable space, where it belongs to.
-
-    :param value: variable value
-    :param bins: sequence of values separating variable space
-    :return: number of bin variable belongs to. If it is smaller than lower_bound - 0.
-    If it is bigger than the upper bound
-    """
-    return np.digitize(x=[value], bins=bins)[0]
-
-
-def _get_state_index(state_bins):
-    """
-    Transforms discretized environment state (represented as sequence of bin indexes) into an integer value.
-    Value is composed by concatenating string representations of a state_bins.
-    Received string is a valid integer, so it is converted to int.
-
-    :param state_bins: sequence of integers that represents discretized environment state.
-    Each integer is an index of bin, where corresponding variable belongs.
-    :return: integer value corresponding to the environment state
-    """
-    state = int("".join(map(lambda state_bin: str(state_bin), state_bins)))
-    return state
-
-
 def go_n_episodes_with_agent(ps_env, agent, n_episodes,
                              max_number_of_steps, u_bins,
                              visualize, actions, test_performance=False):
@@ -117,7 +77,7 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
         us = [u]
         ps = [p]
 
-        state_idx = _get_state_index([_to_bin(u, u_bins)])
+        state_idx = get_state_index([to_bin(u, u_bins)])
 
         action_idx = agent.set_initial_state(state_idx)
         episode_action = [actions[action_idx]]
@@ -131,7 +91,7 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
             us.append(u)
             ps.append(p)
 
-            state_prime = _get_state_index([_to_bin(u, u_bins)])
+            state_prime = get_state_index([to_bin(u, u_bins)])
 
             if test_performance:
                 action_idx = agent.use(state_prime)
