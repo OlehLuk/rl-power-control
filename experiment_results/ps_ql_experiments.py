@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 import os
-from examples.ps_q_learner import run_ps_ql_experiments, run_ps_const_agent_experiments
+from experiment_results.ps_q_learner import run_ps_ql_experiments, run_ps_const_agent_experiments
 from datetime import datetime
 import pickle as pkl
 
@@ -681,10 +681,10 @@ Other experiment parameters were fixed:
 if __name__ == "__main__":
     import time
     start = time.time()
-    folder = "stochastic_ps_experiments"
-    env_entry_point = "examples:JModelicaCSPSEnv"
-    dym_env_class = "examples:DymCSConfigurablePSEnv"
-    stoch_env = "examples:JMCSPSStochasticEnv"
+    folder = "ps_stoch_exp_results"
+    env_entry_point = "experiment_results:JModelicaCSPSEnv"
+    dym_env_class = "experiment_results:DymCSConfigurablePSEnv"
+    stoch_env = "experiment_results:JMCSPSStochasticEnv"
 
     # following experiments rake significant amount of time, so it is advised to run only one of them at once
     # 1

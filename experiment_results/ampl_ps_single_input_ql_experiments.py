@@ -1,6 +1,6 @@
 import logging
 import os
-from examples import run_baseline_experiment_with_files, run_experiment_with_result_files, \
+from experiment_results import run_baseline_experiment_with_files, run_experiment_with_result_files, \
     prepare_experiment
 
 
@@ -103,7 +103,7 @@ Other experiment parameters were fixed:
             log_level=logging.INFO,
             p_reff_amplitude=0.3,
             p_reff_period=10,
-            path="../resources/jmodelica/linux/PS_ampl_det.fmu"
+            path="../resources/PS_ampl_det.fmu"
         )
 
 
@@ -111,9 +111,9 @@ if __name__ == "__main__":
     import time
     start = time.time()
     folder = "ampl_stoch_ps_exp_results"
-    env_entry_point = "examples:JModelicaCSPSEnv"
-    # dym_env_class = "examples:DymCSConfigurablePSEnv"
-    stoch_env = "examples:JMCSPSStochasticEnv"
+    env_entry_point = "experiment_pipeline:JModelicaCSPSEnv"
+    # dym_env_class = "experiment_pipeline:DymCSConfigurablePSEnv"
+    stoch_env = "experiment_pipeline:JMCSPSStochasticEnv"
 
     # best_combination_experiment(folder, env_entry_point=env_entry_point, t_s=[1, 5])
 

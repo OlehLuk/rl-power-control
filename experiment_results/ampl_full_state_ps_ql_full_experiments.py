@@ -1,11 +1,11 @@
 import logging
 import os
-from examples import prepare_experiment
+from experiment_results import prepare_experiment
 import numpy as np
-from examples.ps_q_learner import run_ps_experiments, _get_state_index, _get_bins, _to_bin
+from experiment_results.ps_q_learner import run_ps_experiments, _get_state_index, _get_bins, _to_bin
 import pickle as pkl
 
-from gymalgs.rl import QLearner
+from modelicagym.gymalgs.rl import QLearner
 
 
 def mse(a, b):
@@ -378,9 +378,9 @@ if __name__ == "__main__":
     import time
     start = time.time()
     folder = "ampl_stoch_ps_exp_results"
-    env_entry_point = "examples:JModelicaCSPSEnv"
-    # dym_env_class = "examples:DymCSConfigurablePSEnv"
-    stoch_env = "examples:JMCSPSStochasticEnv"
+    env_entry_point = "experiment_pipeline:JModelicaCSPSEnv"
+    # dym_env_class = "experiment_pipeline:DymCSConfigurablePSEnv"
+    stoch_env = "experiment_pipeline:JMCSPSStochasticEnv"
     best_combination_experiment(folder, env_entry_point=stoch_env, t_s=[1, 5])
 
     # baseline_experiment(folder, [0.5, 1, 2, 5], env_entry_point)

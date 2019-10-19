@@ -1,6 +1,6 @@
 import logging
 import gym
-from gymalgs.rl import QLearner
+from modelicagym.gymalgs.rl import QLearner
 import numpy as np
 import time
 
@@ -276,8 +276,8 @@ def run_ps_experiments(experiment_procedure,
     register(
         id=env_name,
         entry_point=env_entry_point,
-        # entry_point='examples:JModelicaCSPSEnv',
-        # entry_point='examples:DymCSConfigurablePSEnv',
+        # entry_point='experiment_results:JModelicaCSPSEnv',
+        # entry_point='experiment_results:DymCSConfigurablePSEnv',
         kwargs=config
     )
     env = gym.make(env_name)
@@ -351,8 +351,8 @@ def run_ps_const_agent_experiments(env_entry_point,
 if __name__ == "__main__":
     n_episodes = 10
     n_steps = 20
-    env_class = "examples:JModelicaCSPSEnv"
-    dym_env_class = "examples:DymCSConfigurablePSEnv"
+    env_class = "experiment_results:JModelicaCSPSEnv"
+    dym_env_class = "experiment_results:DymCSConfigurablePSEnv"
     _, episodes_lengths, exec_times, mse_rewards, eps_us, eps_ps, _, expl_perf, _ = \
         run_ps_ql_experiments(env_entry_point=dym_env_class,
                               n_experiments=2,
