@@ -1,0 +1,21 @@
+step_once_consid_p_reff
+
+Changed time step in: 
+0 - time_step = 5
+
+Other experiment parameters were fixed:
+    n_experiments=5,
+    n_episodes=200,
+    visualize=False,
+    max_n_steps=200//time_step, # modelling 400 seconds horizon
+    p_reff=1.1,
+    rand_qtab=False,
+    learning_rate=0.5,
+    discount_factor=0.6,
+    k_s=[0.1, 0.5, 1, 2, 7],
+    exploration_rate=0.5,
+    exploration_decay_rate=0.9,   
+    log_level=logging.INFO,
+    p_reff_amplitude=0.3,
+    p_reff_period=201
+        
