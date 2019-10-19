@@ -296,7 +296,9 @@ def prepare_experiment(base_folder, experiment_name):
 
 
 def baseline_experiment(base_folder, const_actions, env_entry_point,
-                        experiment_name="constant_action_variation"):
+                        n_episodes, max_n_steps, time_step, p_reff, log_level,
+                        experiment_name="constant_action_variation",
+                        **kwargs):
 
     experiment_folder = prepare_experiment(base_folder, experiment_name)
 
@@ -312,13 +314,15 @@ Changed constant actions in:
 {}
 
 Other experiment parameters were fixed:
-    n_episodes=10,
-        max_n_steps=20,
-        time_step=1,
-        p_reff=1.2,
-        const_action=a,
-        log_level=logging.INFO
-            """.format(experiment_name, param_i_correspondence))
+    n_repeat={},
+    max_n_steps={},
+    time_step={},
+    p_reff={},
+    const_action=a,
+    log_level=logging.INFO
+    {}
+            """.format(experiment_name, param_i_correspondence, n_episodes, max_n_steps, time_step,
+                       p_reff, kwargs))
 
     for a in const_actions:
         subfolder = "{}/k={}".format(experiment_folder, a)
@@ -326,66 +330,15 @@ Other experiment parameters were fixed:
         run_ps_const_control_experiment_with_files(
             env_entry_point=env_entry_point,
             base_folder=subfolder,
-            n_episodes=10,
-            max_n_steps=200,
-            time_step=1,
-            p_reff=1.2,
+            n_episodes=n_episodes,
+            max_n_steps=max_n_steps,
+            time_step=time_step,
+            p_reff=p_reff,
             const_action=a,
-            log_level=logging.INFO,
-            p_reff_amplitude=0,
-            p_reff_period=200
+            log_level=log_level,
+            **kwargs
         )
 
 
-def ks_experiment(base_folder, ks, env_entry_point):
-    experiment_name = "action_space(k_s)_variation"
-    experiment_folder = prepare_experiment(base_folder, experiment_name)
-
-    if experiment_folder is None:
-        return
-
-    description_file = "{}/experiment_description.txt".format(experiment_folder)
-    with open(description_file, "w") as f:
-        param_i_correspondence = "\n".join(["{} - {}".format(i, k_s) for i, k_s in enumerate(ks)])
-        f.write("""{}
-
-Changed k_s in: 
-{}
-
-Other experiment parameters were fixed:
-    n_experiments=5,
-    n_episodes=100,
-    visualize=False,
-    max_n_steps=200,
-    time_step=1,
-    p_reff=1.3,
-    rand_qtab=False,
-    learning_rate=0.5,
-    discount_factor=0.6,
-    exploration_rate=0.5,
-    exploration_decay_rate=0.9,
-    log_level=logging.INFO
-        """.format(experiment_name, param_i_correspondence))
-
-    for k_s in ks:
-        subfolder = "{}/k_s={}".format(experiment_folder, k_s)
-        os.mkdir(subfolder)
-        run_ps_agent_experiment_with_result_files(
-            env_entry_point=env_entry_point,
-            base_folder=subfolder,
-            n_experiments=5,
-            n_episodes=100,
-            visualize=False,
-            max_n_steps=200,
-            time_step=1,
-            p_reff=1.3,
-            rand_qtab=False,
-            learning_rate=0.5,
-            discount_factor=0.6,
-            exploration_rate=0.5,
-            exploration_decay_rate=0.9,
-            k_s=k_s,
-            log_level=logging.INFO
-        )
 
 

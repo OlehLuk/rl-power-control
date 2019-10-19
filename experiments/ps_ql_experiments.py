@@ -3,25 +3,36 @@ import os
 
 from agents import ps_train_test_osp_ql
 from experiment_pipeline import prepare_experiment, run_ps_agent_experiment_with_result_files, \
-    run_ps_const_control_experiment_with_files
+    run_ps_const_control_experiment_with_files, baseline_experiment
 
-N_REPEAT = 5
-TIME_STEP = 1
-P_REF = 1.3
-LOG_LEVEL = logging.INFO
-VISUALIZE = False
-RAND_QTAB = False
-MAX_NUMBER_OF_STEPS = 200
-N_EPISODES = 100
-LEARNING_RATE = 0.5
-DISCOUNT_FACTOR = 0.6
-EXPLORATION_RATE = 0.5
-EXPLORATION_DECAY_RATE = 0.9
-ACTIONS = [0.1, 0.5, 1, 2, 7]
+
+def gen_exp_descr(experiment_name, param_i_correspondence):
+    descr = """{}
+    {}
+    
+    Other parameters were fixed to default values:
+    n_repeat={},
+    n_episodes={},
+    visualize={},
+    max_n_steps={],
+    time_step={},
+    p_reff={},
+    rand_qtab={},
+    learning_rate={},
+    discount_factor={},
+    exploration_rate={},
+    exploration_decay_rate={},
+    k_s={},    
+    log_level=logging.INFO
+    """.format(experiment_name, param_i_correspondence, N_REPEAT, N_EPISODES, VISUALIZE, MAX_NUMBER_OF_STEPS,
+               TIME_STEP, P_REF, RAND_QTAB, LEARNING_RATE, DISCOUNT_FACTOR, EXPLORATION_DECAY_RATE, EXPLORATION_RATE,
+               ACTIONS)
+
+    return descr
 
 
 def ks_experiment(base_folder, ks, env_entry_point,
-                  experiment_name = "action_space(k_s)_variation"):
+                  experiment_name="action_space(k_s)_variation"):
 
     experiment_folder = prepare_experiment(base_folder, experiment_name)
 
@@ -30,26 +41,8 @@ def ks_experiment(base_folder, ks, env_entry_point,
 
     description_file = "{}/experiment_description.txt".format(experiment_folder)
     with open(description_file, "w") as f:
-        param_i_correspondence = "\n".join(["{} - {}".format(i, k_s) for i, k_s in enumerate(ks)])
-        f.write("""{}
-
-Changed k_s in: 
-{}
-
-Other experiment parameters were fixed:
-    n_experiments=5,
-    n_episodes=100,
-    visualize=False,
-    max_n_steps=200,
-    time_step=1,
-    p_reff=1.3,
-    rand_qtab=False,
-    learning_rate=0.5,
-    discount_factor=0.6,
-    exploration_rate=0.5,
-    exploration_decay_rate=0.9,
-    log_level=logging.INFO
-        """.format(experiment_name, param_i_correspondence))
+        param_i_correspondence = "Changed k_s in:" + "\n".join(["{} - {}".format(i, k_s) for i, k_s in enumerate(ks)])
+        f.write(gen_exp_descr(experiment_name, param_i_correspondence))
 
     for k_s in ks:
         subfolder = "{}/k_s={}".format(experiment_folder, k_s)
@@ -78,7 +71,7 @@ Other experiment parameters were fixed:
 
 
 def exploration_experiment(base_folder, explor_params, env_entry_point,
-                           experiment_name = "exploration(rate_and_discount)_variation"):
+                           experiment_name="exploration(rate_and_discount)_variation"):
 
     experiment_folder = prepare_experiment(base_folder, experiment_name)
 
@@ -89,24 +82,7 @@ def exploration_experiment(base_folder, explor_params, env_entry_point,
     with open(description_file, "w") as f:
         param_i_correspondence = "\n".join(["{} - exploration rate = {}, exploration rate decay = {}".format(
             i, params[0], params[1]) for i, params in enumerate(explor_params)])
-        f.write("""{}
-
-Changed exploration parameters in: 
-{}
-
-Other experiment parameters were fixed:
-    n_experiments=5,
-    n_episodes=100,
-    visualize=False,
-    max_n_steps=200,
-    time_step=1,
-    p_reff=1.3,
-    rand_qtab=False,
-    learning_rate=0.5,
-    discount_factor=0.6,
-    k_s=[0.1, 0.5, 1, 2, 7],    
-    log_level=logging.INFO
-        """.format(experiment_name, param_i_correspondence))
+        f.write(gen_exp_descr(experiment_name, param_i_correspondence))
 
     for expl_rate, expl_decay in explor_params:
         subfolder = "{}/expl_rate={}_decay={}".format(experiment_folder, expl_rate, expl_decay)
@@ -145,25 +121,7 @@ def timestep_experiment(base_folder, t_s, env_entry_point):
     with open(description_file, "w") as f:
         param_i_correspondence = "\n".join(["{} - time_step = {}".format(
             i, t) for i, t in enumerate(t_s)])
-        f.write("""{}
-
-Changed time step in: 
-{}
-
-Other experiment parameters were fixed:
-    n_experiments=5,
-    n_episodes=100,
-    visualize=False,
-    max_n_steps=200,
-    p_reff=1.3,
-    rand_qtab=False,
-    learning_rate=0.5,
-    discount_factor=0.6,
-    k_s=[0.1, 0.5, 1, 2, 7],
-    exploration_rate=0.5,
-    exploration_decay_rate=0.9,   
-    log_level=logging.INFO
-        """.format(experiment_name, param_i_correspondence))
+        f.write(gen_exp_descr(experiment_name, param_i_correspondence))
 
     for t in t_s:
         subfolder = "{}/time_step={}".format(experiment_folder, t)
@@ -203,25 +161,7 @@ def learning_rate_experiment(base_folder, lr_s, env_entry_point):
     with open(description_file, "w") as f:
         param_i_correspondence = "\n".join(["{} - learning_rate = {}".format(
             i, lr) for i, lr in enumerate(lr_s)])
-        f.write("""{}
-
-Learning rate changed in: 
-{}
-
-Other experiment parameters were fixed:
-    n_experiments=5,
-    n_episodes=100,
-    visualize=False,
-    time_step=1,
-    max_n_steps=200,
-    p_reff=1.3,
-    rand_qtab=False,
-    discount_factor=0.6,
-    k_s=[0.1, 0.5, 1, 2, 7],
-    exploration_rate=0.5,
-    exploration_decay_rate=0.9,   
-    log_level=logging.INFO
-        """.format(experiment_name, param_i_correspondence))
+        f.write(gen_exp_descr(experiment_name, param_i_correspondence))
 
     for lr in lr_s:
         subfolder = "{}/learning_rate={}".format(experiment_folder, lr)
@@ -260,25 +200,7 @@ def discount_factor_experiment(base_folder, df_s, env_entry_point):
     with open(description_file, "w") as f:
         param_i_correspondence = "\n".join(["{} - discount_factor = {}".format(
             i, df) for i, df in enumerate(df_s)])
-        f.write("""{}
-
-Discount rate changed in: 
-{}
-
-Other experiment parameters were fixed:
-    n_experiments=5,
-    n_episodes=100,
-    visualize=False,
-    time_step=1,
-    max_n_steps=200,
-    p_reff=1.3,
-    rand_qtab=False,
-    learning_rate=0.5,
-    k_s=[0.1, 0.5, 1, 2, 7],
-    exploration_rate=0.5,
-    exploration_decay_rate=0.9,   
-    log_level=logging.INFO
-        """.format(experiment_name, param_i_correspondence))
+        f.write(gen_exp_descr(experiment_name, param_i_correspondence))
 
     for df in df_s:
         subfolder = "{}/discount_factor={}".format(experiment_folder, df)
@@ -319,26 +241,7 @@ def reward_experiment(base_folder, env_entry_point, compute_reward_s):
         i, comp_rew[0]) for i, comp_rew in enumerate(compute_reward_s)])
 
     with open(description_file, "w") as f:
-        f.write("""{}
-        
-Reward changed in:
-{}
-
-Experiment parameters were fixed:
-    n_experiments=5,
-    n_episodes=100,
-    visualize=False,
-    time_step=5,
-    max_n_steps=40,
-    p_reff=1.3,
-    rand_qtab=False,
-    learning_rate=0.5,
-    discount_factor=0.6,
-    k_s=[0.1, 0.5, 1, 2, 7],
-    exploration_rate=0.5,
-    exploration_decay_rate=0.9,   
-    log_level=logging.INFO
-        """.format(experiment_name, param_i_correspondence))
+        f.write(gen_exp_descr(experiment_name, param_i_correspondence))
 
     for comp_rew in compute_reward_s:
         name, func = comp_rew
@@ -376,23 +279,7 @@ def validation_experiment(base_folder, env_entry_point):
 
     description_file = "{}/experiment_description.txt".format(experiment_folder)
     with open(description_file, "w") as f:
-        f.write("""{}
-
-Experiment parameters were fixed:
-    n_experiments=5,
-    n_episodes=100,
-    visualize=False,
-    time_step=5,
-    max_n_steps=40,
-    p_reff=1.3,
-    rand_qtab=False,
-    learning_rate=0.5,
-    discount_factor=0.6,
-    k_s=[0.1, 0.5, 1, 2, 7],
-    exploration_rate=0.5,
-    exploration_decay_rate=0.9,   
-    log_level=logging.INFO
-        """.format(experiment_name))
+        f.write(gen_exp_descr(experiment_name, None))
     run_ps_agent_experiment_with_result_files(
         agent_train_test_once=lambda env: ps_train_test_osp_ql(
             ps_env=env,
@@ -414,27 +301,10 @@ Experiment parameters were fixed:
         env_entry_point=env_entry_point,
         compute_reward=None,
     )
-    run_ps_agent_experiment_with_result_files(
-        env_entry_point=env_entry_point,
-        base_folder=experiment_folder,
-        n_experiments=5,
-        n_episodes=100,
-        visualize=False,
-        max_n_steps=200,
-        time_step=1,
-        p_reff=1.3,
-        rand_qtab=False,
-        learning_rate=0.5,
-        discount_factor=0.6,
-        exploration_rate=0.5,
-        exploration_decay_rate=0.9,
-        k_s=[0.1, 0.5, 1, 2, 7],
-        log_level=logging.INFO
-    )
 
 
 def best_combination_experiment(base_folder, env_entry_point, t_s,
-                                experiment_name = "best_parameters_combination", **kwargs):
+                                experiment_name="best_parameters_combination", **kwargs):
 
     experiment_folder = prepare_experiment(base_folder, experiment_name)
 
@@ -445,27 +315,7 @@ def best_combination_experiment(base_folder, env_entry_point, t_s,
     with open(description_file, "w") as f:
         param_i_correspondence = "\n".join(["{} - time_step = {}".format(
             i, t) for i, t in enumerate(t_s)])
-        f.write("""{}
-
-Changed time step in: 
-{}
-
-Other experiment parameters were fixed:
-    n_experiments=5,
-    n_episodes=200,
-    visualize=False,
-    max_n_steps=200//time_step, # modelling 400 seconds horizon
-    p_reff=1.2,
-    rand_qtab=False,
-    learning_rate=0.5,
-    discount_factor=0.6,
-    k_s=[0.1, 0.5, 1, 2, 7],
-    exploration_rate=0.5,
-    exploration_decay_rate=0.9,   
-    log_level=logging.INFO,
-    p_reff_amplitude=0,
-    p_reff_period=200,
-        """.format(experiment_name, param_i_correspondence))
+        f.write(gen_exp_descr(experiment_name, param_i_correspondence))
 
     for t in t_s:
         subfolder = "{}/time_step={}".format(experiment_folder, t)
@@ -505,22 +355,7 @@ def validate_stochastic_experiment(base_folder, const_actions, env_entry_point):
     description_file = "{}/experiment_description.txt".format(experiment_folder)
     with open(description_file, "w") as f:
         param_i_correspondence = "\n".join(["{} - {}".format(i, k_s) for i, k_s in enumerate(const_actions)])
-        f.write("""{}
-
-Changed constant actions in: 
-{}
-
-Other experiment parameters were fixed:
-        n_episodes=10,
-        max_n_steps=20,
-        time_step=1,
-        p_reff=1.3,
-        const_action=a,
-        log_level=logging.INFO,
-        p_reff_amplitude=0.3,
-        p_reff_period=200,
-        get_seed=lambda: 23
-            """.format(experiment_name, param_i_correspondence))
+        f.write(gen_exp_descr(experiment_name, param_i_correspondence))
 
     for a in const_actions:
         subfolder = "{}/k={}".format(experiment_folder, a)
@@ -549,6 +384,20 @@ if __name__ == "__main__":
     det_env = "experiment_pipeline:JMDetCSPSEnv"
     stoch_env = "experiment_pipeline:JMCSPSStochasticEnv"
 
+    N_REPEAT = 5
+    TIME_STEP = 1
+    P_REF = 1.3
+    LOG_LEVEL = logging.INFO
+    VISUALIZE = False
+    RAND_QTAB = False
+    MAX_NUMBER_OF_STEPS = 200
+    N_EPISODES = 100
+    LEARNING_RATE = 0.5
+    DISCOUNT_FACTOR = 0.6
+    EXPLORATION_RATE = 0.5
+    EXPLORATION_DECAY_RATE = 0.9
+    ACTIONS = [0.1, 0.5, 1, 2, 7]
+
     # following experiments take significant amount of time, so it is advised to run only one of them at once
     # 1
     # ks_experiment(det_folder, ks=[
@@ -571,7 +420,9 @@ if __name__ == "__main__":
     # discount_factor_experiment(det_folder, [0.2, 0.9], env_entry_point=env_entry_point)
 
     # 6
-    # baseline_experiment(det_folder, [0.5, 1, 2, 5], env_entry_point=stoch_env)
+    # baseline_experiment(det_folder, [0.5, 1, 2, 5], env_entry_point=det_env,
+    #                    n_episodes=5, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
+    #                    p_reff=P_REF, log_level=LOG_LEVEL)
 
     # 7
     # reward_experiment(det_folder, env_entry_point, [
@@ -581,10 +432,15 @@ if __name__ == "__main__":
 
     # 8
     # best_combination_experiment(det_folder, env_entry_point=det_env, t_s=[1, 5])
-    # best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1, 5])
 
-    # validate_stochastic_experiment(folder, [0.5, 1, 2, 5], stoch_env)
-    # validation_experiment(folder, env_entry_point=env_entry_point)
+    # best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1, 5])
+    # P_REF = 1.2
+    # baseline_experiment(stoch_folder, [0.5, 1, 2, 5], env_entry_point=stoch_env,
+    #                    n_episodes=10, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
+    #                    p_reff=P_REF, log_level=LOG_LEVEL)
+
+    # validate_stochastic_experiment(stoch_folder, [0.5, 1, 2, 5], stoch_env)
+    # validation_experiment(stoch_folder, [0.5, 1, 2, 5], env_entry_point=env_entry_point)
 
     end = time.time()
     print("Total execution time {:.2f} seconds".format(end-start))
