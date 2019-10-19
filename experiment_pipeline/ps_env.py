@@ -1,10 +1,9 @@
 import logging
-import random
 import time
 
 import numpy as np
 from gym import spaces
-from modelicagym.environment import JModCSEnv, DymolaCSEnv
+from modelicagym.environment import FMI1CSEnv, FMI2CSEnv
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +92,7 @@ class PSEnv:
             return self.compute_reward(u, p)
 
 
-class JModelicaCSPSEnv(PSEnv, JModCSEnv):
+class JMDetCSPSEnv(PSEnv, FMI2CSEnv):
     """
     Class that integrates Power System FMU as an environments for experiments.
     Positive and negative reward were not specified in config for ModelicaBaseEnv,
@@ -111,7 +110,7 @@ class JModelicaCSPSEnv(PSEnv, JModCSEnv):
                  compute_reward=None,
                  p_reff_amplitude=0,
                  p_reff_period=200,
-                 path="../resources/jmodelica/linux/PowerSystems_Examples_TCL_ULTC_20_LTC_P_New.fmu"):
+                 path="../resources/PS_det_JM.fmu"):
 
         logger.setLevel(log_level)
         self.p_reff = p_reff
@@ -134,7 +133,7 @@ class JModelicaCSPSEnv(PSEnv, JModCSEnv):
     # modelicagym API implementation
 
 
-class JMCSPSStochasticEnv(PSEnv, JModCSEnv):
+class JMCSPSStochasticEnv(PSEnv, FMI2CSEnv):
 
     def __init__(self,
                  p_reff,
@@ -145,7 +144,7 @@ class JMCSPSStochasticEnv(PSEnv, JModCSEnv):
                  p_reff_period=200,
                  get_seed=lambda: round(time.time()),
                  p_diff_threshold=P_DIFF_THRESHOLD,
-                 path="../resources/jmodelica/linux/PS_stochastic_JM.fmu"):
+                 path="../resources/PS_stochastic_JM.fmu"):
 
         logger.setLevel(log_level)
         self.p_reff = p_reff
@@ -178,7 +177,7 @@ class JMCSPSStochasticEnv(PSEnv, JModCSEnv):
         return super().reset()
 
 
-class DymCSConfigurablePSEnv(PSEnv, DymolaCSEnv):
+class DymCSConfigurablePSEnv(PSEnv, FMI1CSEnv):
     """
     Class that integrates Power System FMU as an environments for experiments.
     Positive and negative reward were not specified in config for ModelicaBaseEnv,
@@ -197,7 +196,7 @@ class DymCSConfigurablePSEnv(PSEnv, DymolaCSEnv):
                  p_reff_period=200,
                  p_diff_threshold=P_DIFF_THRESHOLD,
                  compute_reward=None,
-                 path="../resources/PowerSystems_Examples_TCL_0ULTC_020_0LTC_0P_0New_cvode.fmu"):
+                 path="../resources/PS_det_Dym.fmu"):
 
         logger.setLevel(log_level)
         self.p_reff = p_reff
