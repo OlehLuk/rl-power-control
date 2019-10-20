@@ -13,3 +13,5 @@ This repository contains:
   * Q-learning applied to stochastic case with constant reference power - [results](https://github.com/OlehLuk/rl-power-control/blob/master/experiments/results/ps_stoch_exp_res.ipynb).
   * Q-learning applied to stochastic case with step down in reference power in the middle of the considered interval - [results](https://github.com/OlehLuk/rl-power-control/blob/master/experiments/results/ps_stoch_ampl_exp_res.ipynb).
 
+## With support of:
+<img src="support.png" alt="supported by UCU.APPS, Eleks, ModelicaGym" width="700" />
