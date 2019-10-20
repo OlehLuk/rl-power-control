@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import os
 
 from IPython.core.pylabtools import figsize
@@ -83,7 +82,8 @@ def print_exec_time_summary(df_ep_ls, df_ex_ts, df_expl_perf):
     print("\nAverage MSE in exploitation mode {:.4f} +- {:.4f}".format(performance, sigma))
     print("Average exploitatio performance of each agent: \n{}".format(df_expl_perf.mean(axis=0).values))
     return performance, sigma
-    
+
+
 def plot_smoothed(df, title_spec, var_name,  n_exp=5, n_smoothing=20):
     figsize(9,6)
     transformed = df.rolling(window=n_smoothing, min_periods=n_smoothing, axis=0).mean()[n_smoothing-1:]

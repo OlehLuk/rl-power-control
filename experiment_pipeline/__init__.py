@@ -1,5 +1,6 @@
 from .ps_env import *
 from .pipeline import *
+from .visualize import *
 
 
 def mse(a, b):
