@@ -14,7 +14,7 @@ def gen_exp_descr(experiment_name, param_i_correspondence):
     n_repeat={},
     n_episodes={},
     visualize={},
-    max_n_steps={],
+    max_n_steps={},
     time_step={},
     p_reff={},
     rand_qtab={},
