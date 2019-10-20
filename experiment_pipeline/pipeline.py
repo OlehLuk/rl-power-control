@@ -284,7 +284,7 @@ def run_ps_agent_experiment_with_result_files(base_folder,
 
 def prepare_experiment(base_folder, experiment_name):
     now = datetime.now()
-    experiment_folder = "{}/{}_{}".format(base_folder, experiment_name, now.strftime("%d-%m-%Y_%H:%M"))
+    experiment_folder = "{}/{}_{}".format(base_folder, experiment_name, now.strftime("%d-%m-%Y_%H-%M"))
 
     if not os.path.exists(experiment_folder):
         os.mkdir(experiment_folder)
