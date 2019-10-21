@@ -15,7 +15,8 @@ def ps_train_test_osp_ql(ps_env,
                          exploration_rate=0.5,
                          exploration_decay_rate=0.99,
                          k_s=(1, 2, 3),
-                         visualize=True):
+                         visualize=True,
+                         n_test_episodes=None):
     """
     Runs one experiment of Q-learning training on power system environment
     :param ps_env: environment RL agent will learn on.
@@ -47,8 +48,11 @@ def ps_train_test_osp_ql(ps_env,
                                  max_number_of_steps, u_bins,
                                  visualize, k_s, test_performance=False)
 
+    if n_test_episodes is None:
+        n_test_episodes = n_episodes
+
     _, _, exploit_performance, _, _, exploit_actions = \
-        go_n_episodes_with_agent(ps_env, trained_agent, n_episodes,
+        go_n_episodes_with_agent(ps_env, trained_agent, n_test_episodes,
                                  max_number_of_steps, u_bins,
                                  visualize, k_s, test_performance=True)
 
@@ -118,5 +122,7 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
     if test_performance:
         agent.random_action_rate = agents_rand_act_rate
         # print(episodes_actions)
+
+    pb.close()
 
     return agent, episode_lengths, episodes_mse_reward, episodes_us, episodes_ps, episodes_actions

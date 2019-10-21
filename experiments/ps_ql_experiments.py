@@ -1,9 +1,10 @@
 import logging
 import os
+import sys
 
 from agents import ps_train_test_osp_ql
 from experiment_pipeline import prepare_experiment, run_ps_agent_experiment_with_result_files, \
-    run_ps_const_control_experiment_with_files, baseline_experiment
+    run_ps_const_control_experiment_with_files, baseline_experiment, suppress_console
 
 
 def gen_exp_descr(experiment_name, param_i_correspondence):
@@ -332,7 +333,8 @@ def best_combination_experiment(base_folder, env_entry_point, t_s,
                 exploration_rate=EXPLORATION_RATE,
                 exploration_decay_rate=EXPLORATION_DECAY_RATE,
                 k_s=ACTIONS,
-                visualize=VISUALIZE
+                visualize=VISUALIZE,
+                n_test_episodes=N_TEST_EPISODES
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -392,6 +394,7 @@ if __name__ == "__main__":
     RAND_QTAB = False
     MAX_NUMBER_OF_STEPS = 200
     N_EPISODES = 200
+    N_TEST_EPISODES = 50
     LEARNING_RATE = 0.5
     DISCOUNT_FACTOR = 0.6
     EXPLORATION_RATE = 0.5
@@ -437,8 +440,10 @@ if __name__ == "__main__":
     #                            experiment_name="best_params_longer_train")
     #
     P_REF = 1.2
-    best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
-                                experiment_name="best_params_longer_train")
+
+    with suppress_console():
+        best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[5],
+                                    experiment_name="best_params_longer_train")
 
     # baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
     #                    n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,

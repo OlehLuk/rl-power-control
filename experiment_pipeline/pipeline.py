@@ -1,3 +1,5 @@
+import contextlib
+
 import gym
 import logging
 import numpy as np
@@ -10,18 +12,32 @@ from tkinter import *
 from tkinter import ttk
 
 
+@contextlib.contextmanager
+def suppress_console():
+    class DummyFile(object):
+        def write(self, x): pass
+
+    save_stdout = sys.stdout
+    save_stderr = sys.stderr
+    sys.stdout = DummyFile()
+    sys.stderr = DummyFile()
+    yield
+    sys.stdout = save_stdout
+    sys.stderr = save_stderr
+
+
 class ProgressBar(object):
     def __init__(self, variable_name, maximum, counter=0, step_size=1):
         self.root = Tk()
-        self.var = StringVar()
         self.counter = counter
         self.step_size = step_size
         self.pb = ttk.Progressbar(self.root, orient=HORIZONTAL, maximum=maximum, length=256)
         self.label = ttk.Label(self.root, text=variable_name)
+        self.var = StringVar(self.root)
         self.indicator = ttk.Label(self.root, textvariable=self.var)
+        self.indicator.pack()
         self.pb.pack()
         self.label.pack()
-
         self.var.set(self.counter)
 
     def step(self):
@@ -29,6 +45,9 @@ class ProgressBar(object):
         self.pb.step(self.step_size)
         self.var.set(self.counter)
         self.pb.update()
+
+    def close(self):
+        self.root.destroy()
 
 
 def run_ps_experiment(experiment_procedure,

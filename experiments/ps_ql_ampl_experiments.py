@@ -35,7 +35,8 @@ def best_combination_experiment_tsp(base_folder, env_entry_point, t_s,
                 exploration_rate=EXPLORATION_RATE,
                 exploration_decay_rate=EXPLORATION_DECAY_RATE,
                 k_s=ACTIONS,
-                visualize=VISUALIZE
+                visualize=VISUALIZE,
+                n_test_episodes=N_TEST_EPISODES
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -64,7 +65,8 @@ if __name__ == "__main__":
     VISUALIZE = False
     RAND_QTAB = False
     MAX_NUMBER_OF_STEPS = 200
-    N_EPISODES = 100
+    N_EPISODES = 200
+    N_TEST_EPISODES = 50
     LEARNING_RATE = 0.5
     DISCOUNT_FACTOR = 0.6
     EXPLORATION_RATE = 0.5
@@ -77,32 +79,37 @@ if __name__ == "__main__":
     #                            p_reff_amplitude=P_REF_AMPLITUDE,
     #                            p_reff_period=200)
     # best_combination_experiment_tsp(det_folder, env_entry_point=det_env, t_s=[1, 5],
+    #                                experiment_name="best_params_tsp_longer_train",
     #                                p_reff_amplitude=P_REF_AMPLITUDE,
     #                                p_reff_period=200)
     # baseline_experiment(det_folder, BASELINE_ACTIONS, env_entry_point=det_env,
     #                    n_episodes=5, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
     #                    p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
     #                    p_reff_period=201, path="../resources/PS_det_JM_2.fmu")
-    baseline_experiment(det_folder, BASELINE_ACTIONS, env_entry_point=det_env,
-                        n_episodes=5, max_n_steps=40, time_step=5,
-                        p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
-                        p_reff_period=201)
-
+    # baseline_experiment(det_folder, BASELINE_ACTIONS, env_entry_point=det_env,
+    #                    n_episodes=5, max_n_steps=40, time_step=5,
+    #                    p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
+    #                    p_reff_period=201, path="../../resources/PS_det_JM_2.fmu")
     P_REF = 1.1
     # best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1, 5],
     #                            experiment_name="step_once_not_consid_p_reff",
     #                            p_reff_amplitude=P_REF_AMPLITUDE,
     #                            p_reff_period=201)
-    # best_combination_experiment_tsp(stoch_folder, env_entry_point=stoch_env, t_s=[1, 5],
-    #                                p_reff_amplitude=P_REF_AMPLITUDE,
-    #                                p_reff_period=201)
-    baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
-                        n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
-                        p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
-                        p_reff_period=201)
-    baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
-                        n_episodes=20, max_n_steps=40, time_step=5,
-                        p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
-                        p_reff_period=201)
+
+    best_combination_experiment_tsp(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+                                    experiment_name="best_params_tsp_longer_train",
+                                    p_reff_amplitude=P_REF_AMPLITUDE,
+                                    p_reff_period=201,
+                                    path="../resources/PS_stochastic_JM_2.fmu")
+
+
+    # baseline_experiment(stoch_folder, [7], env_entry_point=stoch_env,
+    #                    n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
+    #                    p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
+    #                    p_reff_period=201, path="../../resources/PS_stochastic_JM_2.fmu")
+    # baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+    #                    n_episodes=20, max_n_steps=40, time_step=5,
+    #                    p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
+    #                    p_reff_period=201, path="../../resources/PS_stochastic_JM_2.fmu")
     end = time.time()
     print("Total execution time {:.2f} seconds".format(end-start))
