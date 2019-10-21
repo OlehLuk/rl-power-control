@@ -6,6 +6,29 @@ from datetime import datetime
 import pickle as pkl
 
 from .__init__ import mse
+from tkinter import *
+from tkinter import ttk
+
+
+class ProgressBar(object):
+    def __init__(self, variable_name, maximum, counter=0, step_size=1):
+        self.root = Tk()
+        self.var = StringVar()
+        self.counter = counter
+        self.step_size = step_size
+        self.pb = ttk.Progressbar(self.root, orient=HORIZONTAL, maximum=maximum, length=256)
+        self.label = ttk.Label(self.root, text=variable_name)
+        self.indicator = ttk.Label(self.root, textvariable=self.var)
+        self.pb.pack()
+        self.label.pack()
+
+        self.var.set(self.counter)
+
+    def step(self):
+        self.counter += self.step_size
+        self.pb.step(self.step_size)
+        self.var.set(self.counter)
+        self.pb.update()
 
 
 def run_ps_experiment(experiment_procedure,
@@ -154,6 +177,8 @@ def agent_experiment(env, agent_train_test_once, n_repeat=1):
     expl_perfs = []
     expl_acts = []
 
+    pb = ProgressBar("n_repeat", n_repeat)
+
     for _ in range(n_repeat):
         trained_agent, episodes_length, exec_time, episodes_mse_reward, ep_us, ep_ps, ep_ac, expl_perf, expl_act = \
             agent_train_test_once(
@@ -169,6 +194,7 @@ def agent_experiment(env, agent_train_test_once, n_repeat=1):
         expl_perfs.append(expl_perf)
         expl_acts.append(expl_act)
         env.reset()
+        pb.step()
 
     return trained_agent_s, episodes_length_s, exec_time_s, mse_rewards_s, eps_us, eps_ps, eps_acs, expl_perfs, expl_acts
 

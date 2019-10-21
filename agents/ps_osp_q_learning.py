@@ -2,7 +2,7 @@ import time
 import numpy as np
 from modelicagym.gymalgs.rl import QLearner
 from .discretization import get_state_index, to_bin, get_bins
-from experiment_pipeline import mse
+from experiment_pipeline import mse, ProgressBar
 
 
 # osp - one state parameter
@@ -68,9 +68,14 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
     episodes_ps = []
     episodes_actions = []
 
+    pb_name = "n_episode in train"
+
     if test_performance:
         agents_rand_act_rate = agent.random_action_rate
         agent.random_action_rate = 0
+        pb_name = "n_episode in test"
+
+    pb = ProgressBar(pb_name, n_episodes)
 
     for _ in range(n_episodes):
         u, p = ps_env.reset()
@@ -99,6 +104,7 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
                 action_idx = agent.learn_observation(state_prime, reward)
 
             episode_action.append(actions[action_idx])
+
             if done or step == max_number_of_steps - 1:
                 episode_lengths = np.append(episode_lengths, int(step + 1))
 
@@ -106,6 +112,7 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
                 episodes_ps.append(ps)
                 episodes_actions.append(episode_action)
                 episodes_mse_reward = np.append(episodes_mse_reward, mse(us, ps))
+                pb.step()
                 break
 
     if test_performance:
