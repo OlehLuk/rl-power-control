@@ -1,0 +1,21 @@
+constant_action_variation
+
+Changed constant actions in: 
+0 - 0.5
+1 - 1
+2 - 2
+3 - 3
+4 - 4
+5 - 5
+6 - 6
+7 - 7
+
+Other experiment parameters were fixed:
+    n_repeat=5,
+    max_n_steps=40,
+    time_step=5,
+    p_reff=1.3,
+    const_action=a,
+    log_level=logging.INFO
+    {}
+            

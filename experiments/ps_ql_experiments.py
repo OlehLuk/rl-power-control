@@ -320,7 +320,7 @@ def best_combination_experiment(base_folder, env_entry_point, t_s,
     for t in t_s:
         subfolder = "{}/time_step={}".format(experiment_folder, t)
         os.mkdir(subfolder)
-        max_n_steps = 200 // t
+        max_n_steps = MAX_NUMBER_OF_STEPS // t
         run_ps_agent_experiment_with_result_files(
             agent_train_test_once=lambda env: ps_train_test_osp_ql(
                 ps_env=env,
@@ -391,13 +391,13 @@ if __name__ == "__main__":
     VISUALIZE = False
     RAND_QTAB = False
     MAX_NUMBER_OF_STEPS = 200
-    N_EPISODES = 100
+    N_EPISODES = 200
     LEARNING_RATE = 0.5
     DISCOUNT_FACTOR = 0.6
     EXPLORATION_RATE = 0.5
     EXPLORATION_DECAY_RATE = 0.9
     ACTIONS = [0.1, 0.5, 1, 2, 7]
-
+    BASELINE_ACTIONS = [0.5, 1, 2, 3, 4, 5, 6, 7]
     # following experiments take significant amount of time, so it is advised to run only one of them at once
     # 1
     # ks_experiment(det_folder, ks=[
@@ -420,10 +420,12 @@ if __name__ == "__main__":
     # discount_factor_experiment(det_folder, [0.2, 0.9], env_entry_point=env_entry_point)
 
     # 6
-    # baseline_experiment(det_folder, [0.5, 1, 2, 5], env_entry_point=det_env,
+    # baseline_experiment(det_folder, BASELINE_ACTIONS, env_entry_point=det_env,
     #                    n_episodes=5, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
     #                    p_reff=P_REF, log_level=LOG_LEVEL)
-
+    # baseline_experiment(det_folder, BASELINE_ACTIONS, env_entry_point=det_env,
+    #                    n_episodes=5, max_n_steps=40, time_step=5,
+    #                    p_reff=P_REF, log_level=LOG_LEVEL)
     # 7
     # reward_experiment(det_folder, env_entry_point, [
     #    ["-MSEx100", lambda u, p: -100*(u-p)**2],
@@ -431,12 +433,18 @@ if __name__ == "__main__":
     # ])
 
     # 8
-    # best_combination_experiment(det_folder, env_entry_point=det_env, t_s=[1, 5])
+    # best_combination_experiment(det_folder, env_entry_point=det_env, t_s=[1, 5],
+    #                            experiment_name="best_params_longer_train")
+    #
+    P_REF = 1.2
+    best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+                                experiment_name="best_params_longer_train")
 
-    # best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1, 5])
-    # P_REF = 1.2
-    # baseline_experiment(stoch_folder, [0.5, 1, 2, 5], env_entry_point=stoch_env,
-    #                    n_episodes=10, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
+    # baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+    #                    n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
+    #                    p_reff=P_REF, log_level=LOG_LEVEL)
+    # baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+    #                    n_episodes=20, max_n_steps=40, time_step=5,
     #                    p_reff=P_REF, log_level=LOG_LEVEL)
 
     # validate_stochastic_experiment(stoch_folder, [0.5, 1, 2, 5], stoch_env)

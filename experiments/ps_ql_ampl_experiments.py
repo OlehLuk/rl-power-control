@@ -23,7 +23,7 @@ def best_combination_experiment_tsp(base_folder, env_entry_point, t_s,
     for t in t_s:
         subfolder = "{}/time_step={}".format(experiment_folder, t)
         os.mkdir(subfolder)
-        max_n_steps = 200 // t
+        max_n_steps = MAX_NUMBER_OF_STEPS // t
         run_ps_agent_experiment_with_result_files(
             agent_train_test_once=lambda env: ps_train_test_tsp_ql(
                 ps_env=env,
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     EXPLORATION_DECAY_RATE = 0.9
     ACTIONS = [0.1, 0.5, 1, 2, 7]
     P_REF_AMPLITUDE = 0.3
-
+    BASELINE_ACTIONS = [0.5, 1, 2, 3, 4, 5, 6, 7]
     # best_combination_experiment(det_folder, env_entry_point=det_env, t_s=[1, 5],
     #                            experiment_name="step_once_not_consid_p_reff",
     #                            p_reff_amplitude=P_REF_AMPLITUDE,
@@ -79,8 +79,12 @@ if __name__ == "__main__":
     # best_combination_experiment_tsp(det_folder, env_entry_point=det_env, t_s=[1, 5],
     #                                p_reff_amplitude=P_REF_AMPLITUDE,
     #                                p_reff_period=200)
-    baseline_experiment(det_folder, [0.5, 1, 2, 5], env_entry_point=det_env,
-                        n_episodes=10, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
+    # baseline_experiment(det_folder, BASELINE_ACTIONS, env_entry_point=det_env,
+    #                    n_episodes=5, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
+    #                    p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
+    #                    p_reff_period=201, path="../resources/PS_det_JM_2.fmu")
+    baseline_experiment(det_folder, BASELINE_ACTIONS, env_entry_point=det_env,
+                        n_episodes=5, max_n_steps=40, time_step=5,
                         p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
                         p_reff_period=201)
 
@@ -92,10 +96,13 @@ if __name__ == "__main__":
     # best_combination_experiment_tsp(stoch_folder, env_entry_point=stoch_env, t_s=[1, 5],
     #                                p_reff_amplitude=P_REF_AMPLITUDE,
     #                                p_reff_period=201)
-    baseline_experiment(stoch_folder, [0.5, 1, 2, 5], env_entry_point=stoch_env,
-                        n_episodes=10, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
+    baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+                        n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,
                         p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
                         p_reff_period=201)
-
+    baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+                        n_episodes=20, max_n_steps=40, time_step=5,
+                        p_reff=P_REF, log_level=LOG_LEVEL, p_reff_amplitude=P_REF_AMPLITUDE,
+                        p_reff_period=201)
     end = time.time()
     print("Total execution time {:.2f} seconds".format(end-start))

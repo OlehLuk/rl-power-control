@@ -8,7 +8,7 @@ from modelicagym.environment import FMI1CSEnv, FMI2CSEnv
 logger = logging.getLogger(__name__)
 
 
-P_DIFF_THRESHOLD = 0.5
+P_DIFF_THRESHOLD = 1
 
 
 class PSEnv:
