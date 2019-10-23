@@ -103,7 +103,7 @@ def ps_constant_control_experiment(env, n_episodes, max_number_of_steps, const_a
     episodes_mse_reward = np.array([])
     episodes_us = []
     episodes_ps = []
-
+    pb = ProgressBar("n_episode", n_episodes)
     for _ in range(n_episodes):
         u, p = env.reset()
         us = [u]
@@ -121,7 +121,8 @@ def ps_constant_control_experiment(env, n_episodes, max_number_of_steps, const_a
                 episodes_ps.append(ps)
                 episodes_mse_reward = np.append(episodes_mse_reward, mse(us, ps))
                 break
-
+        pb.step()
+    pb.close()
     return episode_lengths, episodes_mse_reward, episodes_us, episodes_ps
 
 
