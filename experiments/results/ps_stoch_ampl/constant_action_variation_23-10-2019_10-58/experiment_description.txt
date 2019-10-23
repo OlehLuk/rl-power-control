@@ -1,0 +1,15 @@
+constant_action_variation
+
+Changed constant actions in: 
+0 - 8
+1 - 9
+
+Other experiment parameters were fixed:
+    n_repeat=20,
+    max_n_steps=200,
+    time_step=1,
+    p_reff=1.1,
+    const_action=a,
+    log_level=logging.INFO
+    {'p_reff_amplitude': 0.3, 'p_reff_period': 201, 'path': '../resources/PS_stochastic_JM_2.fmu'}
+            
