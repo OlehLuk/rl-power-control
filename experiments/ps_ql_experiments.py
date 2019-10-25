@@ -59,7 +59,8 @@ def ks_experiment(base_folder, ks, env_entry_point,
                 exploration_rate=EXPLORATION_RATE,
                 exploration_decay_rate=EXPLORATION_DECAY_RATE,
                 k_s=k_s,
-                visualize=VISUALIZE
+                visualize=VISUALIZE,
+                n_test_episodes=N_TEST_EPISODES
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -99,7 +100,8 @@ def exploration_experiment(base_folder, explor_params, env_entry_point,
                 exploration_rate=expl_rate,
                 exploration_decay_rate=expl_decay,
                 k_s=ACTIONS,
-                visualize=VISUALIZE
+                visualize=VISUALIZE,
+                n_test_episodes=N_TEST_EPISODES
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -139,7 +141,8 @@ def timestep_experiment(base_folder, t_s, env_entry_point):
                 exploration_rate=EXPLORATION_RATE,
                 exploration_decay_rate=EXPLORATION_DECAY_RATE,
                 k_s=ACTIONS,
-                visualize=VISUALIZE
+                visualize=VISUALIZE,
+                n_test_episodes=N_TEST_EPISODES
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -178,7 +181,8 @@ def learning_rate_experiment(base_folder, lr_s, env_entry_point):
                 exploration_rate=EXPLORATION_RATE,
                 exploration_decay_rate=EXPLORATION_DECAY_RATE,
                 k_s=ACTIONS,
-                visualize=VISUALIZE
+                visualize=VISUALIZE,
+                n_test_episodes=N_TEST_EPISODES
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -217,7 +221,8 @@ def discount_factor_experiment(base_folder, df_s, env_entry_point):
                 exploration_rate=EXPLORATION_RATE,
                 exploration_decay_rate=EXPLORATION_DECAY_RATE,
                 k_s=ACTIONS,
-                visualize=VISUALIZE
+                visualize=VISUALIZE,
+                n_test_episodes=N_TEST_EPISODES
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -259,7 +264,8 @@ def reward_experiment(base_folder, env_entry_point, compute_reward_s):
                 exploration_rate=EXPLORATION_RATE,
                 exploration_decay_rate=EXPLORATION_DECAY_RATE,
                 k_s=ACTIONS,
-                visualize=VISUALIZE
+                visualize=VISUALIZE,
+                n_test_episodes=N_TEST_EPISODES
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -393,7 +399,7 @@ if __name__ == "__main__":
     VISUALIZE = False
     RAND_QTAB = False
     MAX_NUMBER_OF_STEPS = 200
-    N_EPISODES = 200
+    N_EPISODES = 100
     N_TEST_EPISODES = 50
     LEARNING_RATE = 0.5
     DISCOUNT_FACTOR = 0.6
