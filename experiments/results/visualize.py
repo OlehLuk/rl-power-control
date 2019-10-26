@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import seaborn as sns
 
 from IPython.core.pylabtools import figsize
 
@@ -158,3 +159,32 @@ def plot_agent_behaviour(name, n_runs=5, steps=[0, -1], fig_size=(15, 20)):
             else:
                 plt.title("Last step. MSE={}".format(df_mses.iloc[step, i]))
             plt.legend()
+
+def plot_two_perf_dist(baseline, controller, fig_size=(12, 25)):
+    fig_x, fig_y = fig_size
+    figsize(fig_x, fig_y)
+    x = pd.read_csv(controller + "/exploit_performance.csv", header=None)
+    y = pd.read_csv(baseline + "/mses.csv", header=None)[0].values
+    y_mean = y.mean()
+    y_std = y.std()
+    n = x.shape[1]
+    for i in range(n):
+        plt.subplot(n+1, 1, i+1)
+        plt.subplots_adjust(hspace=0.3)
+        x_mean = x[i].mean()
+        x_std = x[i].std()
+        plt.title("Agent performance: mean={:.4f}, std={:.4f} \n Constant control performance:  mean={:.4f}, std={:.4f}".format(
+            x_mean, x_std, y_mean, y_std))
+        ax = sns.distplot(x[i].values, color='red', label="Agent#{}".format(i+1))
+        sns.distplot(y, ax=ax, color='gray', label="Constant control")
+        ax.legend()
+    
+    plt.subplot(n+1, 1, n+1)
+    performance = np.mean(x.mean(axis=0))
+    sigma = np.mean(x.std(axis=0))
+    ax = sns.distplot(x.values.flatten(), color='red', label="Controller")
+    plt.title("Summarized agents performance.\nAgent performance: mean={:.4f}, std={:.4f} \n Constant control performance:  mean={:.4f}, std={:.4f}".format(
+            performance, sigma, y_mean, y_std))
+    sns.distplot(y, ax=ax, color='gray', label="Constant control", axlabel="Performance (MSE)")
+    ax.legend()
+    return 
