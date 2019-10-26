@@ -216,6 +216,7 @@ def agent_experiment(env, agent_train_test_once, n_repeat=1):
         env.reset()
         pb.step()
 
+    pb.close()
     return trained_agent_s, episodes_length_s, exec_time_s, mse_rewards_s, eps_us, eps_ps, eps_acs, expl_perfs, expl_acts
 
 
