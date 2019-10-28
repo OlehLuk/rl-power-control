@@ -144,7 +144,8 @@ class JMCSPSStochasticEnv(PSEnv, FMI2CSEnv):
                  p_reff_period=200,
                  get_seed=lambda: round(time.time()),
                  p_diff_threshold=P_DIFF_THRESHOLD,
-                 path="../resources/PS_stochastic_JM.fmu"):
+                 path="../resources/PS_stochastic_JM.fmu",
+                 simulation_start_time=0):
 
         logger.setLevel(log_level)
         self.p_reff = p_reff
@@ -154,6 +155,7 @@ class JMCSPSStochasticEnv(PSEnv, FMI2CSEnv):
         self.viewer = None
         self.display = None
         self.get_seed = get_seed
+        self.time_step = time_step
 
         config = {
             'model_input_names': ['k_in'],
@@ -164,7 +166,7 @@ class JMCSPSStochasticEnv(PSEnv, FMI2CSEnv):
             'time_step': time_step
         }
         super().__init__(path,
-                         config, log_level)
+                         config, log_level, simulation_start_time=simulation_start_time)
 
     def reset(self):
         """
