@@ -54,6 +54,27 @@ def report_experiment(name, plot_perf_sigma=-1, fig_size=(9, 6), exp_name="", va
     plt.legend()
     return df_avgsm_mses, perf, sigma
 
+def mse_vs_ref(labels, bas_folders, contr_folders, palette=["c", "lightgray"], fig_size=(9, 6)):
+    fig_x, fig_y = fig_size
+    figsize(fig_x, fig_y)
+    
+    contr_mses = []
+    bas_mses = []
+    y_label = 'Performance (MSE)'
+    x_label = 'Reference power'
+    group_label = 'Control type'
+    
+    df = pd.DataFrame(columns=[y_label, group_label, x_label])
+    
+    for i in range(len(labels)):
+        perfs_c = pd.read_csv("{}/exploit_performance.csv".format(contr_folders[i]), header=None).values.flatten()
+        df_temp_c = pd.DataFrame(data={y_label:perfs_c, group_label:"RL controller", x_label:labels[i]})
+        perfs_b = pd.read_csv("{}/mses.csv".format(bas_folders[i]), header=None).values.flatten()
+        df_temp_b = pd.DataFrame(data={y_label:perfs_b, group_label:"Constant", x_label:labels[i]})
+        df = pd.concat([df, df_temp_c, df_temp_b])
+    
+    sns.boxplot(data=df, x=x_label, y=y_label, hue=group_label, palette=palette)
+    return bas_mses, contr_mses
 
 def plot_smoothed(df, exp_name, var_name, n_exp=5, n_smoothing=20, fig_size=(9, 6)):
     fig_x, fig_y = fig_size
