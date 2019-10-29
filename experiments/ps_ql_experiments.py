@@ -445,11 +445,48 @@ if __name__ == "__main__":
     # best_combination_experiment(det_folder, env_entry_point=det_env, t_s=[1, 5],
     #                            experiment_name="best_params_longer_train")
     #
-    P_REF = 1.2
+    P_REF = 1.15
 
     with suppress_console():
-        best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[5],
-                                    experiment_name="best_params_longer_train")
+        baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+                            n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
+                            p_reff=P_REF, log_level=LOG_LEVEL,
+                            experiment_name="baseline_lower_ref")
+        best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+                                    experiment_name="best_params_lower_ref")
+
+    P_REF = 1.25
+    SKIP_SECONDS = 150
+
+    with suppress_console():
+        baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+                            n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
+                            p_reff=P_REF, log_level=LOG_LEVEL, simulation_start_time=SKIP_SECONDS,
+                            experiment_name="baseline_skip_transition_other_ref")
+        best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+                                    experiment_name="best_params_skip_transition_other_ref",
+                                    simulation_start_time=SKIP_SECONDS)
+
+        # ks_experiment(stoch_folder, ks=[
+        #        [0.1, 1, 7],
+        #        [0.1, 7],
+        #    ], env_entry_point=stoch_env)
+        # discount_factor_experiment(stoch_folder, [0.4], env_entry_point=stoch_env)
+        # ks_experiment(stoch_folder, ks=[
+        #                [0.5, 1, 2, 7],
+        #                [0.5, 1, 2, 4, 7]
+        #     ], env_entry_point=stoch_env)
+
+        # exploration_experiment(stoch_folder, explor_params=[[1, 0.9],
+        #                                                    [0.5, 0.999]],
+        #                       env_entry_point=stoch_env)
+        # learning_rate_experiment(stoch_folder, [0.3, 0.7], env_entry_point=stoch_env)
+
+        # reward_experiment(stoch_folder, stoch_env, [
+        #    ["-MAEx1000", lambda u, p: -1000 * abs(u - p)]
+        # ])
+        # best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+        #                            experiment_name="best_params_longer_train")
 
     # baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
     #                    n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=TIME_STEP,

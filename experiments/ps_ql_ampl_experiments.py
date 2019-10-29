@@ -2,7 +2,33 @@ import logging
 import os
 
 from agents import ps_train_test_tsp_ql
-from experiment_pipeline import run_ps_agent_experiment_with_result_files, prepare_experiment, baseline_experiment
+from experiment_pipeline import run_ps_agent_experiment_with_result_files, prepare_experiment, baseline_experiment, \
+    suppress_console
+
+
+def gen_exp_descr(experiment_name, param_i_correspondence):
+    descr = """{}
+    {}
+
+    Other parameters were fixed to default values:
+    n_repeat={},
+    n_episodes={},
+    visualize={},
+    max_n_steps={},
+    time_step={},
+    p_reff={},
+    rand_qtab={},
+    learning_rate={},
+    discount_factor={},
+    exploration_rate={},
+    exploration_decay_rate={},
+    k_s={},    
+    log_level=logging.INFO
+    """.format(experiment_name, param_i_correspondence, N_REPEAT, N_EPISODES, VISUALIZE, MAX_NUMBER_OF_STEPS,
+               TIME_STEP, P_REF, RAND_QTAB, LEARNING_RATE, DISCOUNT_FACTOR, EXPLORATION_DECAY_RATE, EXPLORATION_RATE,
+               ACTIONS)
+
+    return descr
 
 
 def best_combination_experiment_tsp(base_folder, env_entry_point, t_s,
@@ -17,7 +43,6 @@ def best_combination_experiment_tsp(base_folder, env_entry_point, t_s,
     with open(description_file, "w") as f:
         param_i_correspondence = "\n".join(["{} - time_step = {}".format(
             i, t) for i, t in enumerate(t_s)])
-        from experiments.ps_ql_experiments import gen_exp_descr
         f.write(gen_exp_descr(experiment_name, param_i_correspondence))
 
     for t in t_s:
@@ -65,7 +90,7 @@ if __name__ == "__main__":
     VISUALIZE = False
     RAND_QTAB = False
     MAX_NUMBER_OF_STEPS = 200
-    N_EPISODES = 200
+    N_EPISODES = 300
     N_TEST_EPISODES = 50
     LEARNING_RATE = 0.5
     DISCOUNT_FACTOR = 0.6
@@ -96,11 +121,12 @@ if __name__ == "__main__":
     #                            p_reff_amplitude=P_REF_AMPLITUDE,
     #                            p_reff_period=201)
 
-    best_combination_experiment_tsp(stoch_folder, env_entry_point=stoch_env, t_s=[1],
-                                    experiment_name="best_params_tsp_longer_train",
-                                    p_reff_amplitude=P_REF_AMPLITUDE,
-                                    p_reff_period=201,
-                                    path="../resources/PS_stochastic_JM_2.fmu")
+    with suppress_console():
+        best_combination_experiment_tsp(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+                                        experiment_name="best_params_tsp_longer_train",
+                                        p_reff_amplitude=P_REF_AMPLITUDE,
+                                        p_reff_period=201,
+                                        path="../resources/PS_stochastic_JM_2.fmu")
 
 
     # baseline_experiment(stoch_folder, [7], env_entry_point=stoch_env,
