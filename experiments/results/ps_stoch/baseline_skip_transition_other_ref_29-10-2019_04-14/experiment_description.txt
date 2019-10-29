@@ -1,0 +1,21 @@
+baseline_skip_transition_other_ref
+
+Changed constant actions in: 
+0 - 0.5
+1 - 1
+2 - 2
+3 - 3
+4 - 4
+5 - 5
+6 - 6
+7 - 7
+
+Other experiment parameters were fixed:
+    n_repeat=20,
+    max_n_steps=200,
+    time_step=1,
+    p_reff=1.25,
+    const_action=a,
+    log_level=logging.INFO
+    {'simulation_start_time': 150}
+            
