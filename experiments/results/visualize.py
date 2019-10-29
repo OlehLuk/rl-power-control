@@ -143,6 +143,32 @@ def plot_sys_behaviour(name, n_runs=5, steps=[0, -1], old=False, fig_size=(15, 2
             else:
                 plt.title("Last training step. MSE={}".format(df_mses.iloc[step, i]))
             plt.legend()
+            
+def plot_agent_sys_exploit_behaviour(name, n_runs=5, old=False, fig_size=(15, 20)):
+    fig_x, fig_y = fig_size
+    figsize(fig_x, fig_y)
+    df_us = [pd.read_csv("./{}/system_trajectory/us_run_{}.csv".format(name, i), header=None) for i in range(n_runs)]
+    df_ps = [pd.read_csv("./{}/system_trajectory/ps_run_{}.csv".format(name, i), header=None) for i in range(n_runs)]
+    df_actions = [pd.read_csv("./{}/agent/action_run_{}.csv".format(name, i), header=None) for i in range(n_runs)]
+    df_mses = pd.read_csv("./{}/mses.csv".format(name), header=None)
+    for i in range(n_runs):
+        
+        plt.subplot(n_runs, 2, 2 * i + 1)
+        if old:
+            index = list(range(df_us[i].index.shape[0] + 1))
+            plt.plot(index, np.insert(df_us[i].iloc[:, -1].values, 0, FIRST_U), 'red', label="Actual power")
+            plt.plot(index, np.insert(df_ps[i].iloc[:, -1].values, 0, FIRST_P), 'gray',
+                     label="Reference power")
+        else:
+            plt.plot(df_us[i].index.values, df_us[i].iloc[:, -1].values, 'red', label="Actual power")
+            plt.plot(df_us[i].index.values, df_ps[i].iloc[:, -1].values, 'gray', label="Reference power")  
+        plt.title("Last training step system behaviour. MSE={}".format(df_mses.iloc[-1, i]))
+        
+        plt.subplot(n_runs, 2, 2 * i + 2)
+        plt.plot(df_actions[i].index.values, df_actions[i].iloc[:, -1].values, 'o', label="Action performed (k)")
+        plt.title("Last training step agent behaviour. MSE={}".format(df_mses.iloc[-1, i]))
+        
+        plt.legend()
 
 
 def plot_agent_behaviour(name, n_runs=5, steps=[0, -1], fig_size=(15, 20)):
