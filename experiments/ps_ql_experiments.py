@@ -340,7 +340,8 @@ def best_combination_experiment(base_folder, env_entry_point, t_s,
                 exploration_decay_rate=EXPLORATION_DECAY_RATE,
                 k_s=ACTIONS,
                 visualize=VISUALIZE,
-                n_test_episodes=N_TEST_EPISODES
+                n_test_episodes=N_TEST_EPISODES,
+                n_test_steps=N_TEST_STEPS
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -401,6 +402,7 @@ if __name__ == "__main__":
     MAX_NUMBER_OF_STEPS = 200
     N_EPISODES = 100
     N_TEST_EPISODES = 50
+    N_TEST_STEPS = None
     LEARNING_RATE = 0.5
     DISCOUNT_FACTOR = 0.6
     EXPLORATION_RATE = 0.5
@@ -445,27 +447,37 @@ if __name__ == "__main__":
     # best_combination_experiment(det_folder, env_entry_point=det_env, t_s=[1, 5],
     #                            experiment_name="best_params_longer_train")
     #
-    P_REF = 1.15
 
     with suppress_console():
-        baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+        P_REF = 1.35
+        baseline_experiment(stoch_folder, [4, 5, 6, 7], env_entry_point=stoch_env,
                             n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
                             p_reff=P_REF, log_level=LOG_LEVEL,
-                            experiment_name="baseline_lower_ref")
+                            experiment_name="baseline_higher_ref")
         best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
-                                    experiment_name="best_params_lower_ref")
+                                    experiment_name="best_params_higher_ref")
 
-    P_REF = 1.25
-    SKIP_SECONDS = 150
-
-    with suppress_console():
+        P_REF = 1.2
         baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
-                            n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
-                            p_reff=P_REF, log_level=LOG_LEVEL, simulation_start_time=SKIP_SECONDS,
-                            experiment_name="baseline_skip_transition_other_ref")
+                            n_episodes=20, max_n_steps=400, time_step=1,
+                            p_reff=P_REF, log_level=LOG_LEVEL,
+                            experiment_name="baseline_longer_test")
+        N_TEST_STEPS = 400
         best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
-                                    experiment_name="best_params_skip_transition_other_ref",
-                                    simulation_start_time=SKIP_SECONDS)
+                                    experiment_name="best_params_longer_test")
+
+    # P_REF = 1.25
+    # SKIP_SECONDS = 150
+    # LEARNING_RATE = 0.3
+
+    # with suppress_console():
+    #    baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+    #                        n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
+    #                        p_reff=P_REF, log_level=LOG_LEVEL, simulation_start_time=SKIP_SECONDS,
+    #                        experiment_name="baseline_skip_transition_other_ref")
+    #    best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+    #                                experiment_name="best_params_skip_transition_other_ref",
+    #                                simulation_start_time=SKIP_SECONDS)
 
         # ks_experiment(stoch_folder, ks=[
         #        [0.1, 1, 7],
