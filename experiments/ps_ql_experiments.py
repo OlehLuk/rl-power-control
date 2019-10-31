@@ -234,8 +234,7 @@ def discount_factor_experiment(base_folder, df_s, env_entry_point):
         )
 
 
-def reward_experiment(base_folder, env_entry_point, compute_reward_s):
-    experiment_name = "reward_variation"
+def reward_experiment(base_folder, env_entry_point, compute_reward_s, experiment_name = "reward_variation"):
     experiment_folder = prepare_experiment(base_folder, experiment_name)
 
     if experiment_folder is None:
@@ -448,23 +447,31 @@ if __name__ == "__main__":
     #                            experiment_name="best_params_longer_train")
     #
 
+    # running now
     with suppress_console():
-        P_REF = 1.35
-        baseline_experiment(stoch_folder, [4, 5, 6, 7], env_entry_point=stoch_env,
-                            n_episodes=20, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
-                            p_reff=P_REF, log_level=LOG_LEVEL,
-                            experiment_name="baseline_higher_ref")
-        best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
-                                    experiment_name="best_params_higher_ref")
-
         P_REF = 1.2
-        baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
-                            n_episodes=20, max_n_steps=400, time_step=1,
-                            p_reff=P_REF, log_level=LOG_LEVEL,
-                            experiment_name="baseline_longer_test")
-        N_TEST_STEPS = 400
+        N_EPISODES = 50
         best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
-                                    experiment_name="best_params_longer_test")
+                                    experiment_name="best_params_50_ep")
+        N_EPISODES = 100
+        ACTIONS = BASELINE_ACTIONS
+        best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+                                    experiment_name="best_params_all_actions")
+
+    # to run
+    with suppress_console():
+        P_REF = 1.15
+        LEARNING_RATE = 0.3
+        ACTIONS = [0.1, 1, 7]
+
+        best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+                                    experiment_name="best_params_lr_acts")
+
+        reward_experiment(stoch_folder, stoch_env, [
+               ["-MAEx1000", lambda u, p: -1000 * abs(u - p)]
+            ], experiment_name="best_params_lr_acts_reward")
+
+
 
     # P_REF = 1.25
     # SKIP_SECONDS = 150

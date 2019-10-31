@@ -1,0 +1,18 @@
+best_params_lr_acts
+    0 - time_step = 1
+    
+    Other parameters were fixed to default values:
+    n_repeat=5,
+    n_episodes=100,
+    visualize=False,
+    max_n_steps=200,
+    time_step=1,
+    p_reff=1.15,
+    rand_qtab=False,
+    learning_rate=0.3,
+    discount_factor=0.6,
+    exploration_rate=0.9,
+    exploration_decay_rate=0.5,
+    k_s=[0.1, 1, 7],    
+    log_level=logging.INFO
+    
