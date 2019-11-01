@@ -217,7 +217,7 @@ def plot_two_perf_dist(baseline, controller, fig_size=(12, 25)):
     n = x.shape[1]
     for i in range(n):
         plt.subplot(n+1, 1, i+1)
-        plt.subplots_adjust(hspace=0.3)
+        plt.subplots_adjust(hspace=0.4)
         x_mean = x[i].mean()
         x_std = x[i].std()
         plt.title("Agent performance: mean={:.4f}, std={:.4f} \n Constant control performance:  mean={:.4f}, std={:.4f}".format(
@@ -233,5 +233,42 @@ def plot_two_perf_dist(baseline, controller, fig_size=(12, 25)):
     plt.title("Summarized agents performance.\nAgent performance: mean={:.4f}, std={:.4f} \n Constant control performance:  mean={:.4f}, std={:.4f}".format(
             performance, sigma, y_mean, y_std))
     sns.distplot(y, ax=ax, color='gray', label="Constant control", axlabel="Performance (MSE)")
+    ax.legend()
+    return 
+
+
+def plot_perf_dist(baseline, controllers, labels, fig_size=(12, 25)):
+    fig_x, fig_y = fig_size
+    figsize(fig_x, fig_y)
+    x = [pd.read_csv(controller + "/exploit_performance.csv", header=None) for controller in controllers]
+    y = pd.read_csv(baseline + "/mses.csv", header=None)[0].values
+    y_mean = y.mean()
+    y_std = y.std()
+    n = x[0].shape[1]
+    
+    for i in range(n):
+        plt.subplot(n+1, 1, i+1)
+        plt.subplots_adjust(hspace=0.4)
+        
+        x_mean = [x_i[i].mean() for x_i in x]
+        x_std = [x_i[i].std() for x_i in x]
+        plt.title("Constant control performance:  mean={:.4f}, std={:.4f}".format(y_mean, y_std))
+        
+        ax = sns.distplot(y, color='gray', label="Constant control")
+        
+        for j, x_i in enumerate(x):
+            sns.distplot(x_i[i].values, ax=ax, label="{} Agent#{}".format(labels[j], i+1))
+        ax.legend()
+    
+    plt.subplot(n+1, 1, n+1)
+    performance = [np.mean(x_i.mean(axis=0)) for x_i in x]
+    sigma = [np.mean(x_i.std(axis=0)) for x_i in x]
+    ax = sns.distplot(y, color='gray', label="Constant control", axlabel="Performance (MSE)")
+    
+    for j, x_i in enumerate(x):
+        sns.distplot(x_i[i].values, ax=ax, label="{} Agent#{}".format(labels[j], i+1))
+    
+    
+    
     ax.legend()
     return 
