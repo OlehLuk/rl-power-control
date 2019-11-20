@@ -54,15 +54,13 @@ def report_experiment(name, plot_perf_sigma=-1, fig_size=(9, 6), exp_name="", va
     plt.legend()
     return df_avgsm_mses, perf, sigma
 
-def mse_vs_ref(labels, bas_folders, contr_folders, palette=["c", "lightgray"], fig_size=(9, 6)):
+def mse_vs_ref(labels, bas_folders, contr_folders, palette=["c", "lightgray"], fig_size=(9, 6), y_label = 'Performance (MSE)', x_label = 'Reference power', group_label = 'Control type'):
     fig_x, fig_y = fig_size
     figsize(fig_x, fig_y)
     
     contr_mses = []
     bas_mses = []
-    y_label = 'Performance (MSE)'
-    x_label = 'Reference power'
-    group_label = 'Control type'
+    
     
     df = pd.DataFrame(columns=[y_label, group_label, x_label])
     
