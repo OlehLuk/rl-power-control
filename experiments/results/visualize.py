@@ -105,7 +105,7 @@ def report_const_experiment(name, old=False, fig_size=(12, 20)):
 
     for i, subf in enumerate(subfolder_names):
         plt.subplot(n_variations, 1, i + 1)
-        if old:
+        if not old:
             plt.plot(df_us[i].index.values, df_us[i].iloc[:, 0].values, 'red', label="Actual power")
             plt.plot(df_us[i].index.values, df_ps[i].iloc[:, 0].values, 'gray', label="Reference power")
         else:
