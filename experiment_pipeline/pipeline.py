@@ -249,6 +249,7 @@ def run_ps_agent_experiment_with_result_files(base_folder,
                                               log_level,
                                               env_entry_point,
                                               compute_reward=None,
+                                              write_large=True,
                                               **kwargs):
     """
     Runs experiments with the given configuration and writes episodes length of all experiment as one file
@@ -310,13 +311,14 @@ def run_ps_agent_experiment_with_result_files(base_folder,
                    delimiter=",",
                    fmt="%.4f")
 
-        np.savetxt(fname="{}/trained_qtable_run_{}.csv".format(agent_folder, i),
-                   X=np.array(agents[i].qtable),
-                   delimiter=",",
-                   fmt="%.4f")
+        if write_large:
+            np.savetxt(fname="{}/trained_qtable_run_{}.csv".format(agent_folder, i),
+                       X=np.array(agents[i].qtable),
+                       delimiter=",",
+                       fmt="%.4f")
 
-        with open("{}/trained_agent_run_{}.pkl".format(agent_folder, i), "wb") as f:
-            pkl.dump(agents[i], f)
+            with open("{}/trained_agent_run_{}.pkl".format(agent_folder, i), "wb") as f:
+                pkl.dump(agents[i], f)
 
         np.savetxt(fname="{}/action_run_{}.csv".format(agent_folder, i),
                    X=np.transpose(eps_acs[i]),
