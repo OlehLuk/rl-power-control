@@ -68,10 +68,32 @@ def mse_vs_ref(labels, bas_folders, contr_folders, palette=["c", "lightgray"], f
         perfs_c = pd.read_csv("{}/exploit_performance.csv".format(contr_folders[i]), header=None).values.flatten()
         df_temp_c = pd.DataFrame(data={y_label:perfs_c, group_label:"RL controller", x_label:labels[i]})
         perfs_b = pd.read_csv("{}/mses.csv".format(bas_folders[i]), header=None).values.flatten()
-        df_temp_b = pd.DataFrame(data={y_label:perfs_b, group_label:"Constant", x_label:labels[i]})
+        df_temp_b = pd.DataFrame(data={y_label:perfs_b, group_label:"Constant control", x_label:labels[i]})
         df = pd.concat([df, df_temp_c, df_temp_b])
     
     sns.boxplot(data=df, x=x_label, y=y_label, hue=group_label, palette=palette)
+    return bas_mses, contr_mses
+
+def perf_box_plots(labels, bas_folders, contr_folders, color='lightgray', fig_size=(9, 6), y_label = 'Performance (MSE)', x_label = 'Reference power'):
+    fig_x, fig_y = fig_size
+    figsize(fig_x, fig_y)
+    
+    contr_mses = []
+    bas_mses = []
+    
+    df = pd.DataFrame(columns=[y_label, x_label])
+    
+    for i in range(len(contr_folders)):
+        perfs_c = pd.read_csv("{}/exploit_performance.csv".format(contr_folders[i]), header=None).values.flatten()
+        df_temp_c = pd.DataFrame(data={y_label:perfs_c, x_label:labels[i]})
+        df = pd.concat([df, df_temp_c])
+        
+    for i in range(len(bas_folders)):
+        perfs_b = pd.read_csv("{}/mses.csv".format(bas_folders[i]), header=None).values.flatten()
+        df_temp_b = pd.DataFrame(data={y_label:perfs_b, x_label:"Constant"})
+        df = pd.concat([df, df_temp_b])
+    
+    sns.boxplot(data=df, x=x_label, y=y_label, color=color)
     return bas_mses, contr_mses
 
 def plot_smoothed(df, exp_name, var_name, n_exp=5, n_smoothing=20, fig_size=(9, 6)):
