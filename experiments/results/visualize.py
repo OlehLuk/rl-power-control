@@ -180,7 +180,8 @@ def report_const_experiment(name, old=False, fig_size=(12, 20)):
 
         avg_mse = df_mses[i].mean()[0]
         std_mse = df_mses[i].std()[0]
-        plt.title("Constant action {}. MSE: avg={:.4f}, std={:.4f}".format(subf, avg_mse, std_mse))
+        median_mse = np.median(df_mses[i])
+        plt.title("Constant action {}. MSE: avg={:.4f}, std={:.4f}, median={:.4f}".format(subf, avg_mse, std_mse, median_mse))
         plt.legend()
 
 
@@ -200,6 +201,8 @@ def print_exec_summary(df_ep_ls, df_ex_ts, df_expl_perf, stochastic):
         sigma = np.mean(df_expl_perf.std(axis=0))
     else:
         sigma = df_expl_perf.std(axis=1)[0]
+    median_perf = np.median(df_expl_perf.values.flatten())
+    print("\nMedian performance (MSE) in exploitation mode {:.4f}".format(median_perf))
     print("\nAverage MSE in exploitation mode {:.4f} +- {:.4f}".format(performance, sigma))
     print("Average exploitation performance of each agent: \n{}".format(df_expl_perf.mean(axis=0).values))
     return performance, sigma
