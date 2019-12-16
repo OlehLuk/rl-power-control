@@ -1,0 +1,27 @@
+hop_win_skip175_p_ref_30bins
+    0 - window size = 2
+1 - window size = 4
+    
+    Other parameters were fixed to default values:
+    n_repeat=5,
+    n_episodes=100,
+    visualize=False,
+    max_n_steps=200,
+    time_step=1,
+    p_reff=1.2,
+    rand_qtab=False,
+    learning_rate=0.5,
+    discount_factor=0.6,
+    exploration_rate=0.9,
+    exploration_decay_rate=0.5,
+    k_s=[0.1, 0.5, 1, 2, 7],
+    n_bins=10,
+    window_size=5,
+    bins=[0.89227586 0.90766207 0.92304828 0.93843448 0.95382069 0.9692069
+ 0.9845931  0.99997931 1.01536552 1.03075172 1.04613793 1.06152414
+ 1.07691034 1.09229655 1.10768276 1.12306897 1.13845517 1.15384138
+ 1.16922759 1.18461379 1.2        1.21538621 1.23077241 1.24615862
+ 1.26154483 1.27693103 1.29231724 1.30770345 1.32308966],   
+    log_level=logging.INFO
+    {}
+    
