@@ -332,7 +332,7 @@ def plot_perf_dist(baseline, controllers, labels, fig_size=(12, 25)):
     ax = sns.distplot(y, color='gray', label="Constant control", axlabel="Performance (MSE)")
     
     for j, x_i in enumerate(x):
-        sns.distplot(x_i[i].values, ax=ax, label="{} Agent#{}".format(labels[j], i+1))
+        sns.distplot(x_i[i].values, ax=ax, label="{}".format(labels[j]))
     
     
     
