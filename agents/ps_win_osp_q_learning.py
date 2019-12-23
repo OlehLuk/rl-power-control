@@ -21,7 +21,8 @@ def ps_train_test_window_osp_ql(ps_env,
                                 n_bins=100,
                                 n_test_episodes=None,
                                 n_test_steps=None,
-                                bins=None):
+                                bins=None,
+                                use_all_rewards=False):
     """
     Runs one experiment of Q-learning training on power system environment
     :param ps_env: environment RL agent will learn on.
@@ -41,7 +42,6 @@ def ps_train_test_window_osp_ql(ps_env,
     else:
         u_bins = bins
         n_bins = len(u_bins) + 1
-    # ref_bins = _get_bins(1.2, 1.4, 1)
 
     learner = QLearner(n_states=n_bins**n_outputs,
                        n_actions=n_actions,
@@ -55,7 +55,7 @@ def ps_train_test_window_osp_ql(ps_env,
         go_n_episodes_with_agent(ps_env, learner, n_episodes,
                                  max_number_of_steps, u_bins,
                                  visualize, k_s, test_performance=False,
-                                 window_size=window_size, hop_size=hop_size)
+                                 window_size=window_size, hop_size=hop_size, use_all_rewards=use_all_rewards)
 
     if n_test_episodes is None:
         n_test_episodes = n_episodes
@@ -78,7 +78,7 @@ def ps_train_test_window_osp_ql(ps_env,
 def go_n_episodes_with_agent(ps_env, agent, n_episodes,
                              max_number_of_steps, u_bins,
                              visualize, actions, window_size=1, hop_size=1,
-                             test_performance=False):
+                             test_performance=False, use_all_rewards=False):
 
     episode_lengths = np.array([])
     episodes_mse_reward = np.array([])
@@ -106,6 +106,7 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
         ps.append(p)
         window_us.append(to_bin(u, u_bins))
         episode_action = []
+        rewards = [0]
 
         for _ in range(1, window_size):
             episode_action.append(0)
@@ -114,6 +115,8 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
             us.append(u)
             ps.append(p)
             window_us.append(to_bin(u, u_bins))
+            if use_all_rewards:
+                rewards.append(reward)
 
         state_idx = get_state_index(window_us, n_bins)
 
@@ -132,12 +135,17 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
             ps.append(p)
             window_us.append(to_bin(u, u_bins))
             window_us.pop(0)
+            if use_all_rewards:
+                rewards.append(reward)
+                rewards.pop(0)
 
             hop_flag -= 1
 
             if hop_flag == 0:
                 hop_flag = hop_size
                 state_prime = get_state_index(window_us, n_bins)
+                if use_all_rewards:
+                    reward = sum(rewards) / window_size
 
                 if test_performance:
                     action_idx = agent.use(state_prime)
@@ -156,7 +164,6 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
 
     if test_performance:
         agent.random_action_rate = agents_rand_act_rate
-        # print(episodes_actions)
 
     pb.close()
 

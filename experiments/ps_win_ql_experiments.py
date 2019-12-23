@@ -70,7 +70,8 @@ def hop_window_experiment(base_folder, env_entry_point, ws_s,
                 n_test_episodes=N_TEST_EPISODES,
                 n_test_steps=N_TEST_STEPS,
                 hop_size=ws,
-                bins=BINS
+                bins=BINS,
+                use_all_rewards=USE_ALL_REWARDS
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -118,7 +119,8 @@ def slide_window_experiment(base_folder, env_entry_point, ws_s,
                 window_size=ws,
                 n_test_episodes=N_TEST_EPISODES,
                 n_test_steps=N_TEST_STEPS,
-                bins=BINS
+                bins=BINS,
+                use_all_rewards=USE_ALL_REWARDS
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -160,12 +162,21 @@ if __name__ == "__main__":
     HOP_SIZE = 1
     BINS = None
     N_BINS = 10
+    USE_ALL_REWARDS = False
 
     with suppress_console():
-        N_EPISODES = 200
-        BINS = load_bins("results/dicretization_bins/baseline_p_ref_10bins.csv")
-        slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
-                               experiment_name="ql_baseline_p_ref_10bins_200ep")
+        N_BINS = 25
+        N_TEST_STEPS = 400
+        SKIP_SECONDS = 175
+        USE_ALL_REWARDS = True
+        slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[2],
+                                experiment_name="slide_skip175_long_test_25bins",
+                                simulation_start_time=SKIP_SECONDS)
+
+        # N_EPISODES = 200
+        # BINS = load_bins("results/dicretization_bins/baseline_p_ref_10bins.csv")
+        #slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+        #                       experiment_name="ql_baseline_p_ref_10bins_200ep")
 
 
 
