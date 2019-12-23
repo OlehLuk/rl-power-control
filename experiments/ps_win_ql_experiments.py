@@ -3,9 +3,10 @@ import os
 
 from agents.ps_win_osp_q_learning import ps_train_test_window_osp_ql
 from experiment_pipeline import prepare_experiment, run_ps_agent_experiment_with_result_files, suppress_console
+from experiments.discr_bins_calculation import load_bins
 
 
-def gen_exp_descr(experiment_name, param_i_correspondence):
+def gen_exp_descr(experiment_name, param_i_correspondence, **kwargs):
     descr = """{}
     {}
     
@@ -23,11 +24,13 @@ def gen_exp_descr(experiment_name, param_i_correspondence):
     exploration_decay_rate={},
     k_s={},
     n_bins={},
-    window_size={}    
+    window_size={},
+    bins={},   
     log_level=logging.INFO
+    {}
     """.format(experiment_name, param_i_correspondence, N_REPEAT, N_EPISODES, VISUALIZE, MAX_NUMBER_OF_STEPS,
                TIME_STEP, P_REF, RAND_QTAB, LEARNING_RATE, DISCOUNT_FACTOR, EXPLORATION_DECAY_RATE, EXPLORATION_RATE,
-               ACTIONS, N_BINS, WINDOWS_SIZE)
+               ACTIONS, N_BINS, WINDOWS_SIZE, BINS, kwargs)
 
     return descr
 
@@ -66,7 +69,8 @@ def hop_window_experiment(base_folder, env_entry_point, ws_s,
                 window_size=ws,
                 n_test_episodes=N_TEST_EPISODES,
                 n_test_steps=N_TEST_STEPS,
-                hop_size=ws
+                hop_size=ws,
+                bins=BINS
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -92,7 +96,7 @@ def slide_window_experiment(base_folder, env_entry_point, ws_s,
     with open(description_file, "w") as f:
         param_i_correspondence = "\n".join(["{} - window size = {}".format(
             i, ws) for i, ws in enumerate(ws_s)])
-        f.write(gen_exp_descr(experiment_name, param_i_correspondence))
+        f.write(gen_exp_descr(experiment_name, param_i_correspondence, **kwargs))
 
     for ws in ws_s:
         subfolder = "{}/window_size={}".format(experiment_folder, ws)
@@ -113,7 +117,8 @@ def slide_window_experiment(base_folder, env_entry_point, ws_s,
                 n_bins=N_BINS,
                 window_size=ws,
                 n_test_episodes=N_TEST_EPISODES,
-                n_test_steps=N_TEST_STEPS
+                n_test_steps=N_TEST_STEPS,
+                bins=BINS
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -153,16 +158,90 @@ if __name__ == "__main__":
     N_BINS = 100
     WINDOWS_SIZE = 5
     HOP_SIZE = 1
+    BINS = None
+    N_BINS = 10
 
-    slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1, 2],
-                            experiment_name="slide_win_exp_100_bins")
-    slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4], write_large=False,
-                            experiment_name="slide_win_exp_100_bins")
+    with suppress_console():
+        N_EPISODES = 200
+        BINS = load_bins("results/dicretization_bins/baseline_p_ref_10bins.csv")
+        slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+                               experiment_name="ql_baseline_p_ref_10bins_200ep")
 
-    hop_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1, 2],
-                            experiment_name="hop_win_exp_100_bins")
-    hop_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4], write_large=False,
-                            experiment_name="hop_win_exp_100_bins", )
+
+
+
+        # N_EPISODES = 200
+        # BINS = load_bins("results/dicretization_bins/baseline12_hist_bins.csv")
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+        #                        experiment_name="ql_baseline12_hist_bins")
+
+        # BINS = load_bins("results/dicretization_bins/bas_skip175_hist_bins.csv")
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+        #                        experiment_name="ql_baseline12_skip175_hist_bins_skip175",
+        #                        simulation_start_time=SKIP_SECONDS)
+        # BINS = load_bins("results/dicretization_bins/bas_skip175_p_ref_10bins.csv")
+        # hop_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[2, 4],
+        #                       experiment_name="hop_win_skip175_p_ref_10bins",
+        #                       simulation_start_time=SKIP_SECONDS)
+        # BINS = load_bins("results/dicretization_bins/bas_skip175_p_ref_30bins.csv")
+        # hop_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[2, 4],
+        #                       experiment_name="hop_win_skip175_p_ref_30bins",
+        #                       simulation_start_time=SKIP_SECONDS)
+        # BINS = load_bins("results/dicretization_bins/bas_skip175_p_ref_30bins.csv")
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[2, 4],
+        #                         experiment_name="slide_win_skip175_p_ref_30bins",
+        #                         simulation_start_time=SKIP_SECONDS)
+
+        # BINS = None
+        # N_BINS = 25
+        # N_TEST_STEPS = 400
+        # N_EPISODES = 200
+        # SKIP_SECONDS = 175
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[2],
+        #                        experiment_name="slide_skip175_200ep_long_test_25bins",
+        #                        simulation_start_time=SKIP_SECONDS)
+
+
+
+        # SKIP_SECONDS = 175
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[2],
+        #                        experiment_name="slide_skip175_long_test_25bins_09-17",
+        #                        simulation_start_time=SKIP_SECONDS)
+
+        # BINS = load_bins("results/dicretization_bins/ql12_32ep_p_ref_10bins.csv")
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+        #                        experiment_name="ql_ql12_32ep_p_ref_10bins_skip175",
+        #                        simulation_start_time=SKIP_SECONDS)
+
+        # BINS = load_bins("results/dicretization_bins/baseline_p_ref_10bins.csv")
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+        #                       experiment_name="ql_baseline_p_ref_10bins_skip175",
+        #                        simulation_start_time=SKIP_SECONDS)
+
+        # SKIP_SECONDS = 175
+        # BINS = load_bins("results/dicretization_bins/baseline12_quantile_10bins.csv")
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+        #                        experiment_name="ql_baseline12_quantile_10bins_skip_175",
+        #                        simulation_start_time=SKIP_SECONDS)
+
+        # BINS = load_bins("results/dicretization_bins/baseline12_hist_bins.csv")
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+        #                        experiment_name="ql_baseline12_hist_bins_skip_175",
+        #                        simulation_start_time=SKIP_SECONDS)
+
+
+        # BINS = load_bins("results/dicretization_bins/baseline12_quantile_25bins.csv")
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+        #                        experiment_name="baseline_quantile_bins_test")
+
+
+        # slide_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4], write_large=False,
+        #                        experiment_name="slide_win_exp_100_09-17_bins", simulation_start_time=SKIP_SECONDS)
+
+        # hop_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[2],
+        #                        experiment_name="hop_win_exp_100_09-17_bins_long")
+        # hop_window_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4], write_large=False,
+        #                        experiment_name="hop_win_exp_10_bins")
 
     end = time.time()
     print("Total execution time {:.2f} seconds".format(end-start))

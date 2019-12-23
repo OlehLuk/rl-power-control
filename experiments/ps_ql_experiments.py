@@ -447,19 +447,65 @@ if __name__ == "__main__":
     #                            experiment_name="best_params_longer_train")
     #
 
+    P_REF = 1.2
     # running now
     with suppress_console():
-        P_REF = 1.2
-        N_EPISODES = 50
-        best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
-                                    experiment_name="best_params_50_ep")
-        N_EPISODES = 100
-        ACTIONS = BASELINE_ACTIONS
-        best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
-                                    experiment_name="best_params_all_actions")
+        P_REF = 1.15
+        N_BASELINE_EPISODES = 50
+        SKIP_SECONDS = 175
+        baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+                            n_episodes=N_BASELINE_EPISODES, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
+                            p_reff=P_REF, log_level=LOG_LEVEL, simulation_start_time=SKIP_SECONDS,
+                            experiment_name="baseline115_skip175_50ep_1s")
+        # baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+        #                    n_episodes=N_BASELINE_EPISODES, max_n_steps=MAX_NUMBER_OF_STEPS // 5, time_step=5,
+        #                    p_reff=P_REF, log_level=LOG_LEVEL,
+        #                    experiment_name="baseline12_50ep_5s")
+        # SKIP_SECONDS = 175
+        # baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+        #                    n_episodes=N_BASELINE_EPISODES, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
+        #                    p_reff=P_REF, log_level=LOG_LEVEL, simulation_start_time=SKIP_SECONDS,
+        #                    experiment_name="baseline115_skip175_50ep_1s")
+        P_REF = 1.25
+        baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+                            n_episodes=N_BASELINE_EPISODES, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
+                            p_reff=P_REF, log_level=LOG_LEVEL, simulation_start_time=SKIP_SECONDS,
+                            experiment_name="baseline125_skip175_50ep_1s")
 
-    # to run
-    with suppress_console():
+        P_REF = 1.35
+        baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+                            n_episodes=N_BASELINE_EPISODES, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
+                            p_reff=P_REF, log_level=LOG_LEVEL, simulation_start_time=SKIP_SECONDS,
+                            experiment_name="baseline135_skip175_50ep_1s")
+        P_REF = 1.05
+        baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+                            n_episodes=N_BASELINE_EPISODES, max_n_steps=MAX_NUMBER_OF_STEPS, time_step=1,
+                            p_reff=P_REF, log_level=LOG_LEVEL, simulation_start_time=SKIP_SECONDS,
+                            experiment_name="baseline105_skip175_50ep_1s")
+
+        # baseline_experiment(stoch_folder, BASELINE_ACTIONS, env_entry_point=stoch_env,
+        #                    n_episodes=N_BASELINE_EPISODES, max_n_steps=MAX_NUMBER_OF_STEPS // 5, time_step=5,
+        #                    p_reff=P_REF, log_level=LOG_LEVEL, simulation_start_time=SKIP_SECONDS,
+        #                    experiment_name="baseline12_skip175_50ep_5s")
+
+        # best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[5],
+        #                            experiment_name="best_params_skip_175_5s",
+        #                            simulation_start_time=SKIP_SECONDS)
+
+        # N_EPISODES = 300
+        # best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[5],
+        #                            experiment_name="best_params_300ep_5s")
+        # N_EPISODES = 50
+        # best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+        #                            experiment_name="best_params_50_ep")
+        # N_EPISODES = 100
+        # ACTIONS = BASELINE_ACTIONS
+        # best_combination_experiment(stoch_folder, env_entry_point=stoch_env, t_s=[1],
+        #                            experiment_name="best_params_all_actions")
+
+
+    """
+        with suppress_console():
         P_REF = 1.15
         LEARNING_RATE = 0.3
         ACTIONS = [0.1, 1, 7]
@@ -470,6 +516,8 @@ if __name__ == "__main__":
         reward_experiment(stoch_folder, stoch_env, [
                ["-MAEx1000", lambda u, p: -1000 * abs(u - p)]
             ], experiment_name="best_params_lr_acts_reward")
+    """
+
 
 
 

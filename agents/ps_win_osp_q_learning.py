@@ -19,9 +19,9 @@ def ps_train_test_window_osp_ql(ps_env,
                                 window_size=1,
                                 hop_size=1,
                                 n_bins=100,
-                                write_large=True,
                                 n_test_episodes=None,
-                                n_test_steps=None):
+                                n_test_steps=None,
+                                bins=None):
     """
     Runs one experiment of Q-learning training on power system environment
     :param ps_env: environment RL agent will learn on.
@@ -36,8 +36,11 @@ def ps_train_test_window_osp_ql(ps_env,
     n_outputs = window_size
     n_actions = len(k_s)
 
-    u_bins = get_bins(0.1, 1.7, n_bins)
-
+    if bins is None:
+        u_bins = get_bins(0.9, 1.7, n_bins)
+    else:
+        u_bins = bins
+        n_bins = len(u_bins) + 1
     # ref_bins = _get_bins(1.2, 1.4, 1)
 
     learner = QLearner(n_states=n_bins**n_outputs,
@@ -92,6 +95,8 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
 
     pb = ProgressBar(pb_name, n_episodes)
 
+    n_bins = len(u_bins) + 1
+
     for _ in range(n_episodes):
         us = []
         ps = []
@@ -110,7 +115,7 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
             ps.append(p)
             window_us.append(to_bin(u, u_bins))
 
-        state_idx = get_state_index(window_us)
+        state_idx = get_state_index(window_us, n_bins)
 
         action_idx = agent.set_initial_state(state_idx)
 
@@ -130,10 +135,10 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
 
             hop_flag -= 1
 
-            state_prime = get_state_index(window_us)
-
             if hop_flag == 0:
                 hop_flag = hop_size
+                state_prime = get_state_index(window_us, n_bins)
+
                 if test_performance:
                     action_idx = agent.use(state_prime)
                 else:

@@ -28,7 +28,7 @@ def to_bin(value, bins):
     return np.digitize(x=[value], bins=bins)[0]
 
 
-def get_state_index(state_bins):
+def get_state_index_old(state_bins):
     """
     Transforms discretized environment state (represented as sequence of bin indexes) into an integer value.
     Value is composed by concatenating string representations of a state_bins.
@@ -39,4 +39,19 @@ def get_state_index(state_bins):
     :return: integer value corresponding to the environment state
     """
     state = int("".join(map(lambda state_bin: str(state_bin), state_bins)))
+    return state
+
+
+def get_state_index(state_bins, n_bins=10):
+    """
+    Transforms discretized environment state (represented as sequence of bin indexes) into an integer value.
+    Value is composed by concatenating string representations of a state_bins.
+    Received string is a valid integer, so it is converted to int.
+
+    :param state_bins: sequence of integers that represents discretized environment state.
+    Each integer is an index of bin, where corresponding variable belongs.
+    :return: integer value corresponding to the environment state
+    """
+    state = sum([s_bin*n_bins**i for i, s_bin in enumerate(state_bins)])
+    # state = int("".join(map(lambda state_bin: str(state_bin), state_bins)))
     return state
