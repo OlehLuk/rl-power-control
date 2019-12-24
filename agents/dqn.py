@@ -49,7 +49,7 @@ class MlpDqn(nn.Module):
 class DqnAgent:
     def __init__(self, actions, n_state_variables, n_hidden_1, n_hidden_2,
                  buffer_size, batch_size, exploration_rate, expl_rate_decay, expl_rate_final,
-                 discount_factor, target_update):
+                 discount_factor, target_update, dummy=False):
         n_actions = len(actions)
         self.actions = actions
         self.discount_factor = discount_factor
@@ -58,6 +58,7 @@ class DqnAgent:
         self.expl_rate_final = expl_rate_final
         self.step_counter = 0
         self.batch_size = batch_size
+        self.dummy = dummy
 
         self.model = MlpDqn(n_state_variables, n_hidden_1, n_hidden_2, n_actions)
 
@@ -76,10 +77,12 @@ class DqnAgent:
         action = self.actions.index(action)
         self.buffer.push(state, action, reward, next_state)
 
-        if len(self.buffer) < self.batch_size:
+        if not self.dummy and len(self.buffer) < self.batch_size:
             return self._choose_random_action()
 
         batch = self.buffer.sample(self.batch_size)
+        if self.dummy:
+            batch = (state, action, reward, next_state)
         self.train_dqn(batch)
 
         self.step_counter += 1
