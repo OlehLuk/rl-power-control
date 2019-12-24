@@ -74,6 +74,8 @@ class DqnAgent:
         self.optimizer = torch.optim.Adam(self.model.parameters())
 
     def learn(self, state, action, reward, next_state):
+        self.step_counter += 1
+
         action = self.actions.index(action)
         self.buffer.push(state, action, reward, next_state)
 
@@ -85,7 +87,7 @@ class DqnAgent:
             batch = (state, action, reward, next_state)
         self.train_dqn(batch)
 
-        self.step_counter += 1
+
 
         if self.target_update is not None and self.step_counter % self.target_update == 0:
             self.model_target.load_state_dict(self.model.state_dict())
@@ -129,6 +131,9 @@ class DqnAgent:
 
         loss = F.mse_loss(state_action_values, expected_state_action_values.unsqueeze(1))
         return loss
+
+    def save(self, path):
+        torch.save(self.model.state_dict(), path)
 
     def get_current_expl_rate(self):
         to_return = self.exploration_rate

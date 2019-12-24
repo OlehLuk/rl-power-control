@@ -9,8 +9,6 @@ from experiment_pipeline import mse, ProgressBar
 def ps_train_test_dqn(ps_env,
                       max_number_of_steps=40,
                       n_episodes=10,
-
-                      learning_rate=0.01,
                       discount_factor=0.6,
                       exploration_rate=0.5,
                       exploration_decay_rate=0.99,
@@ -87,6 +85,7 @@ def go_n_episodes_with_dqn_agent(ps_env, agent, n_episodes,
 
     if test_performance:
         pb_name = "n_episode in test"
+        agent.model.eval()
 
     pb = ProgressBar(pb_name, n_episodes)
 
@@ -179,5 +178,5 @@ if __name__ == "__main__":
     env = gym.make(env_name)
 
     result = ps_train_test_dqn(env)
-
+    result[0].save("agent_trained.pt")
     del gym.envs.registry.env_specs[env_name]

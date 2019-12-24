@@ -57,7 +57,6 @@ def dqn_target_experiment(base_folder, env_entry_point, ws_s,
                 ps_env=env,
                 max_number_of_steps=MAX_NUMBER_OF_STEPS,
                 n_episodes=N_EPISODES,
-                learning_rate=LEARNING_RATE,
                 discount_factor=DISCOUNT_FACTOR,
                 exploration_rate=EXPLORATION_RATE,
                 exploration_decay_rate=EXPLORATION_DECAY_RATE,
@@ -79,6 +78,8 @@ def dqn_target_experiment(base_folder, env_entry_point, ws_s,
             env_entry_point=env_entry_point,
             compute_reward=None,
             write_large=write_large,
+            q_learning=False,
+            save_agent=lambda agent, path: agent.save(path),
             **kwargs
         )
 
@@ -95,9 +96,9 @@ if __name__ == "__main__":
     P_REF = 1.2
     LOG_LEVEL = logging.INFO
     VISUALIZE = False
-    MAX_NUMBER_OF_STEPS = 200
-    N_EPISODES = 100
-    N_TEST_EPISODES = 50
+    MAX_NUMBER_OF_STEPS = 40
+    N_EPISODES = 10
+    N_TEST_EPISODES = 5
     N_TEST_STEPS = None
     LEARNING_RATE = 0.5
     DISCOUNT_FACTOR = 0.6
