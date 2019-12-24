@@ -1,13 +1,14 @@
+import logging
 import random
 import time
 import numpy as np
-from .dqn import DqnAgent
+from agents.dqn import DqnAgent
 from experiment_pipeline import mse, ProgressBar
 
 
 def ps_train_test_dqn(ps_env,
-                      max_number_of_steps=20,
-                      n_episodes=5,
+                      max_number_of_steps=40,
+                      n_episodes=10,
 
                       learning_rate=0.01,
                       discount_factor=0.6,
@@ -18,8 +19,12 @@ def ps_train_test_dqn(ps_env,
                       window_size=4,
                       n_test_episodes=None,
                       n_test_steps=None,
-                      use_all_rewards=False,
-                      buffer_size=8, batch_size=8):
+                      buffer_size=8,
+                      batch_size=8,
+                      n_hidden_1=32,
+                      n_hidden_2=32,
+                      target_update=10
+                      ):
     """
     Runs one experiment of DQN training on power system environment
     :param ps_env: environment RL agent will learn on.
@@ -33,21 +38,22 @@ def ps_train_test_dqn(ps_env,
     start = time.time()
 
     agent = DqnAgent(actions=k_s,
-                     n_hidden_1=32,
-                     n_hidden_2=32,
-                     n_state_variables=window_size,
-                     buffer_size=buffer_size,
-                     batch_size=batch_size,
-                     exploration_rate=exploration_rate,
-                     expl_rate_decay=exploration_decay_rate,
-                     discount_factor=discount_factor,
-                     expl_rate_final=expl_rate_final
+                                 n_hidden_1=n_hidden_1,
+                                 n_hidden_2=n_hidden_2,
+                                 n_state_variables=window_size,
+                                 buffer_size=buffer_size,
+                                 batch_size=batch_size,
+                                 exploration_rate=exploration_rate,
+                                 expl_rate_decay=exploration_decay_rate,
+                                 discount_factor=discount_factor,
+                                 expl_rate_final=expl_rate_final,
+                                 target_update=target_update
                      )
 
     trained_agent, episode_lengths, episodes_mse_reward, episodes_us, episodes_ps, episodes_actions = \
-        go_n_episodes_with_agent(ps_env, agent, n_episodes,
-                                 max_number_of_steps, k_s, test_performance=False,
-                                 window_size=window_size)
+        go_n_episodes_with_dqn_agent(ps_env, agent, n_episodes,
+                                     max_number_of_steps, k_s, test_performance=False,
+                                     window_size=window_size)
 
     if n_test_episodes is None:
         n_test_episodes = n_episodes
@@ -56,9 +62,9 @@ def ps_train_test_dqn(ps_env,
         n_test_steps = max_number_of_steps
 
     _, _, exploit_performance, _, _, exploit_actions = \
-        go_n_episodes_with_agent(ps_env, trained_agent, n_test_episodes,
-                                 n_test_steps, k_s, test_performance=True,
-                                 window_size=window_size)
+        go_n_episodes_with_dqn_agent(ps_env, trained_agent, n_test_episodes,
+                                     n_test_steps, k_s, test_performance=True,
+                                     window_size=window_size)
 
     end = time.time()
     execution_time = end - start
@@ -66,10 +72,10 @@ def ps_train_test_dqn(ps_env,
            episodes_us, episodes_ps, episodes_actions, exploit_performance, exploit_actions
 
 
-def go_n_episodes_with_agent(ps_env, agent, n_episodes,
-                             max_number_of_steps,
-                             actions, window_size=1,
-                             test_performance=False):
+def go_n_episodes_with_dqn_agent(ps_env, agent, n_episodes,
+                                 max_number_of_steps,
+                                 actions, window_size=1,
+                                 test_performance=False):
     hop_size = window_size
     episode_lengths = np.array([])
     episodes_mse_reward = np.array([])
@@ -92,7 +98,8 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
         us.append(u)
         ps.append(p)
         window_us.append(u)
-        action = random.sample(actions)
+        # action = random.sample(actions, k=1)[0]
+        action = 1
         episode_action = [action]
         rewards = [0]
 
@@ -105,8 +112,11 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
             window_us.append(u)
             rewards.append(reward)
 
-        state = window_us
+        state = window_us[:]
         hop_flag = hop_size
+
+        if test_performance:
+            action = agent.use(state)
 
         for step in range(window_size, max_number_of_steps+1):
             episode_action.append(action)
@@ -123,14 +133,14 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
 
             if hop_flag == 0:
                 hop_flag = hop_size
-                next_state = window_us
+                next_state = window_us[:]
                 reward = sum(rewards) / window_size
 
                 if test_performance:
                     action = agent.use(next_state)
                 else:
-                    action = agent.learn(state, reward, next_state, done)
-                    state = next_state
+                    action = agent.learn(state, action, reward, next_state)
+                    state = next_state[:]
 
             if done or step == max_number_of_steps:
                 episode_lengths = np.append(episode_lengths, int(step))
@@ -145,3 +155,29 @@ def go_n_episodes_with_agent(ps_env, agent, n_episodes,
     pb.close()
 
     return agent, episode_lengths, episodes_mse_reward, episodes_us, episodes_ps, episodes_actions
+
+
+if __name__ == "__main__":
+    import gym
+
+    config = {
+        'time_step': 1,
+        'p_reff': 1.2,
+        'log_level': logging.INFO,
+        'compute_reward': None
+    }
+
+    from gym.envs.registration import register
+
+    env_name = "CSPSEnv-v1"
+
+    register(
+        id=env_name,
+        entry_point="experiment_pipeline:JMCSPSStochasticEnv",
+        kwargs=config
+    )
+    env = gym.make(env_name)
+
+    result = ps_train_test_dqn(env)
+
+    del gym.envs.registry.env_specs[env_name]
