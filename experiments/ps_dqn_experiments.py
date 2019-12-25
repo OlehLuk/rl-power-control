@@ -25,11 +25,12 @@ def gen_exp_descr(experiment_name, param_i_correspondence, **kwargs):
     buffer_size={},
     batch_size={},
     n_hidden=[fc1:{}, fc2:{}],
+    exploration decay every () steps,
     log_level=logging.INFO
     {}
     """.format(experiment_name, param_i_correspondence, N_REPEAT, N_EPISODES, VISUALIZE, MAX_NUMBER_OF_STEPS,
                TIME_STEP, P_REF, DISCOUNT_FACTOR, EXPLORATION_DECAY_RATE, EXPLORATION_RATE, EXPLORATION_RATE_FINAL,
-               ACTIONS, TARGET_UPDATE, BUFFER_SIZE, BATCH_SIZE, N_HIDDEN_1, N_HIDDEN_2, kwargs)
+               ACTIONS, TARGET_UPDATE, BUFFER_SIZE, BATCH_SIZE, N_HIDDEN_1, N_HIDDEN_2, EXPL_DECAY_STEP, kwargs)
 
     return descr
 
@@ -68,7 +69,8 @@ def dqn_target_experiment(base_folder, env_entry_point, ws_s,
                 buffer_size=BUFFER_SIZE,
                 batch_size=BATCH_SIZE,
                 n_hidden_1=N_HIDDEN_1,
-                n_hidden_2=N_HIDDEN_2
+                n_hidden_2=N_HIDDEN_2,
+                expl_decay_step=EXPL_DECAY_STEP
             ),
             base_folder=subfolder,
             n_repeat=N_REPEAT,
@@ -107,22 +109,23 @@ if __name__ == "__main__":
     ACTIONS = [0.1, 0.5, 1, 2, 7]
     BASELINE_ACTIONS = [0.5, 1, 2, 3, 4, 5, 6, 7]
 
+    EXPL_DECAY_STEP = 1
     TARGET_UPDATE = 100
-    EXPLORATION_RATE_FINAL = 0.05
+    EXPLORATION_RATE_FINAL = 0.01
     BUFFER_SIZE = 100
     BATCH_SIZE = 8
     N_HIDDEN_1 = 32
     N_HIDDEN_2 = 32
 
     dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                          experiment_name="dqn")
+                          experiment_name="dqn_expl_fin_001")
 
     # with suppress_console():
 
-    SKIP_SECONDS = 175
+    # SKIP_SECONDS = 175
 
-    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                            experiment_name="dqn_skip175",
-                            simulation_start_time=SKIP_SECONDS)
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+    #                        experiment_name="dqn_skip175",
+    #                        simulation_start_time=SKIP_SECONDS)
     end = time.time()
     print("Total execution time {:.2f} seconds".format(end-start))
