@@ -49,7 +49,8 @@ class MlpDqn(nn.Module):
 class DqnAgent:
     def __init__(self, actions, n_state_variables, n_hidden_1, n_hidden_2,
                  buffer_size, batch_size, exploration_rate, expl_rate_decay, expl_rate_final,
-                 discount_factor, target_update, dummy=False):
+                 discount_factor, target_update, expl_decay_step, dummy=False):
+        self.expl_decay_step = expl_decay_step
         n_actions = len(actions)
         self.actions = actions
         self.discount_factor = discount_factor
@@ -138,7 +139,8 @@ class DqnAgent:
     def get_current_expl_rate(self):
         to_return = self.exploration_rate
         print("Current exploration rate was {}".format(to_return))
-        self.exploration_rate *= self.expl_rate_decay
+        if self.step_counter % self.expl_decay_step == 0:
+            self.exploration_rate *= self.expl_rate_decay
         if self.exploration_rate < self.expl_rate_final:
             self.exploration_rate = self.expl_rate_final
         return to_return

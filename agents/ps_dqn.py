@@ -21,31 +21,33 @@ def ps_train_test_dqn(ps_env,
                       batch_size=8,
                       n_hidden_1=32,
                       n_hidden_2=32,
-                      target_update=10
+                      target_update=10,
+                      expl_decay_step=1
                       ):
     """
     Runs one experiment of DQN training on power system environment
     :param ps_env: environment RL agent will learn on.
     :param max_number_of_steps: maximum episode length.
     :param n_episodes: number of episodes to perform.
-    :param visualize: flag if experiments should be rendered.
-    :return: trained Q-learning agent, array of actual episodes length,
+
+    :return: trained agent, array of actual episodes length,
     execution time in s, mse-rewards at the end of each episode
     """
 
     start = time.time()
 
     agent = DqnAgent(actions=k_s,
-                                 n_hidden_1=n_hidden_1,
-                                 n_hidden_2=n_hidden_2,
-                                 n_state_variables=window_size,
-                                 buffer_size=buffer_size,
-                                 batch_size=batch_size,
-                                 exploration_rate=exploration_rate,
-                                 expl_rate_decay=exploration_decay_rate,
-                                 discount_factor=discount_factor,
-                                 expl_rate_final=expl_rate_final,
-                                 target_update=target_update
+                     n_hidden_1=n_hidden_1,
+                     n_hidden_2=n_hidden_2,
+                     n_state_variables=window_size,
+                     buffer_size=buffer_size,
+                     batch_size=batch_size,
+                     exploration_rate=exploration_rate,
+                     expl_rate_decay=exploration_decay_rate,
+                     discount_factor=discount_factor,
+                     expl_rate_final=expl_rate_final,
+                     target_update=target_update,
+                     expl_decay_step=expl_decay_step
                      )
 
     trained_agent, episode_lengths, episodes_mse_reward, episodes_us, episodes_ps, episodes_actions = \
@@ -66,7 +68,7 @@ def ps_train_test_dqn(ps_env,
 
     end = time.time()
     execution_time = end - start
-    return trained_agent, episode_lengths, execution_time, episodes_mse_reward,\
+    return trained_agent, episode_lengths, execution_time, episodes_mse_reward, \
            episodes_us, episodes_ps, episodes_actions, exploit_performance, exploit_actions
 
 
@@ -117,7 +119,7 @@ def go_n_episodes_with_dqn_agent(ps_env, agent, n_episodes,
         if test_performance:
             action = agent.use(state)
 
-        for step in range(window_size, max_number_of_steps+1):
+        for step in range(window_size, max_number_of_steps + 1):
             episode_action.append(action)
             observation, reward, done, _ = ps_env.step(action)
             u, p = observation
