@@ -133,7 +133,7 @@ class DqnAgent:
         return loss
 
     def save(self, path):
-        torch.save(self.model.state_dict(), path)
+        torch.save(self.model.state_dict(), path+".pt")
 
     def get_current_expl_rate(self):
         to_return = self.exploration_rate

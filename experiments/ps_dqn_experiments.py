@@ -96,14 +96,14 @@ if __name__ == "__main__":
     P_REF = 1.2
     LOG_LEVEL = logging.INFO
     VISUALIZE = False
-    MAX_NUMBER_OF_STEPS = 40
-    N_EPISODES = 10
-    N_TEST_EPISODES = 5
+    MAX_NUMBER_OF_STEPS = 200
+    N_EPISODES = 100
+    N_TEST_EPISODES = 50
     N_TEST_STEPS = None
     LEARNING_RATE = 0.5
     DISCOUNT_FACTOR = 0.6
     EXPLORATION_RATE = 0.5
-    EXPLORATION_DECAY_RATE = 0.9
+    EXPLORATION_DECAY_RATE = 0.999
     ACTIONS = [0.1, 0.5, 1, 2, 7]
     BASELINE_ACTIONS = [0.5, 1, 2, 3, 4, 5, 6, 7]
 
@@ -117,12 +117,12 @@ if __name__ == "__main__":
     dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
                           experiment_name="dqn")
 
-    with suppress_console():
+    # with suppress_console():
 
-        SKIP_SECONDS = 175
+    SKIP_SECONDS = 175
 
-        dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                                experiment_name="dqn_skip175",
-                                simulation_start_time=SKIP_SECONDS)
+    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+                            experiment_name="dqn_skip175",
+                            simulation_start_time=SKIP_SECONDS)
     end = time.time()
     print("Total execution time {:.2f} seconds".format(end-start))

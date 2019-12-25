@@ -178,5 +178,5 @@ if __name__ == "__main__":
     env = gym.make(env_name)
 
     result = ps_train_test_dqn(env)
-    result[0].save("agent_trained.pt")
+    result[0].save("agent_trained")
     del gym.envs.registry.env_specs[env_name]
