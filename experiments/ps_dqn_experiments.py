@@ -111,14 +111,45 @@ if __name__ == "__main__":
 
     EXPL_DECAY_STEP = 1
     TARGET_UPDATE = 100
-    EXPLORATION_RATE_FINAL = 0.01
+    EXPLORATION_RATE_FINAL = 0.05
     BUFFER_SIZE = 100
     BATCH_SIZE = 8
     N_HIDDEN_1 = 32
     N_HIDDEN_2 = 32
 
+    BUFFER_SIZE = 500
     dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                          experiment_name="dqn_expl_fin_001")
+                          experiment_name="dqn_expl_big_buffer")
+
+    BUFFER_SIZE = 100
+    N_HIDDEN_1 = 64
+    N_HIDDEN_2 = 64
+    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+                          experiment_name="dqn_expl_wide_hidden")
+
+    N_HIDDEN_1 = 32
+    N_HIDDEN_2 = 32
+    DISCOUNT_FACTOR = 0.9
+    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+                          experiment_name="dqn_expl_high_discount")
+
+    DISCOUNT_FACTOR = 0.6
+    BATCH_SIZE = 32
+    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+                          experiment_name="dqn_expl_big_batch")
+
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1, 2],
+    #                      experiment_name="dqn_expl_winsize")
+
+    # BUFFER_SIZE = 50
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+    #                       experiment_name="dqn_expl_buffer_size")
+    # BUFFER_SIZE = 100
+
+    # EXPL_DECAY_STEP = 10
+    # EXPLORATION_DECAY_RATE = 0.9
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+    #                      experiment_name="dqn_expl_expl_step_decay")
 
     # with suppress_console():
 

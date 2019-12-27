@@ -88,8 +88,6 @@ class DqnAgent:
             batch = (state, action, reward, next_state)
         self.train_dqn(batch)
 
-
-
         if self.target_update is not None and self.step_counter % self.target_update == 0:
             self.model_target.load_state_dict(self.model.state_dict())
 
