@@ -1,0 +1,23 @@
+dqn_targetupdate_high
+    0 - window size = 4
+    
+    Other parameters were fixed to default values:
+    n_repeat=5,
+    n_episodes=100,
+    visualize=False,
+    max_n_steps=200,
+    time_step=1,
+    p_reff=1.2,
+    discount_factor=0.6,
+    exploration_rate=0.999,
+    exploration_decay_rate=0.5,
+    exploration_rate_final=0.05,
+    k_s=[0.1, 0.5, 1, 2, 7],   
+    target_update=400,
+    buffer_size=100,
+    batch_size=8,
+    n_hidden=[fc1:32, fc2:32],
+    exploration decay every () steps,
+    log_level=logging.INFO
+    1
+    

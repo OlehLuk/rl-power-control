@@ -117,26 +117,33 @@ if __name__ == "__main__":
     N_HIDDEN_1 = 32
     N_HIDDEN_2 = 32
 
-    BUFFER_SIZE = 500
+    TARGET_UPDATE = 25
     dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                          experiment_name="dqn_expl_big_buffer")
+                                               experiment_name="dqn_targetupdate_low")
+    TARGET_UPDATE = 400
+    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+                          experiment_name="dqn_targetupdate_high")
 
-    BUFFER_SIZE = 100
-    N_HIDDEN_1 = 64
-    N_HIDDEN_2 = 64
-    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                          experiment_name="dqn_expl_wide_hidden")
+    # BUFFER_SIZE = 500
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+    #                      experiment_name="dqn_expl_big_buffer")
 
-    N_HIDDEN_1 = 32
-    N_HIDDEN_2 = 32
-    DISCOUNT_FACTOR = 0.9
-    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                          experiment_name="dqn_expl_high_discount")
+    # BUFFER_SIZE = 100
+    # N_HIDDEN_1 = 64
+    # N_HIDDEN_2 = 64
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+    #                       experiment_name="dqn_expl_wide_hidden")
 
-    DISCOUNT_FACTOR = 0.6
-    BATCH_SIZE = 32
-    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                          experiment_name="dqn_expl_big_batch")
+    # N_HIDDEN_1 = 32
+    # N_HIDDEN_2 = 32
+    # DISCOUNT_FACTOR = 0.9
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+    #                       experiment_name="dqn_expl_high_discount")
+
+    # DISCOUNT_FACTOR = 0.6
+    # BATCH_SIZE = 32
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+    #                       experiment_name="dqn_expl_big_batch")
 
     # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1, 2],
     #                      experiment_name="dqn_expl_winsize")
