@@ -118,11 +118,19 @@ if __name__ == "__main__":
     N_HIDDEN_2 = 32
 
     TARGET_UPDATE = 25
-    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                                               experiment_name="dqn_targetupdate_low")
-    TARGET_UPDATE = 400
-    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
-                          experiment_name="dqn_targetupdate_high")
+    N_HIDDEN_1 = 64
+    N_HIDDEN_2 = 64
+    BATCH_SIZE = 16
+    BUFFER_SIZE = 200
+    dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
+                                              experiment_name="dqn_best")
+
+    # TARGET_UPDATE = 25
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+    #                                           experiment_name="dqn_targetupdate_low")
+    # TARGET_UPDATE = 400
+    # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
+    #                      experiment_name="dqn_targetupdate_high")
 
     # BUFFER_SIZE = 500
     # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
