@@ -105,7 +105,7 @@ if __name__ == "__main__":
     LEARNING_RATE = 0.5
     DISCOUNT_FACTOR = 0.6
     EXPLORATION_RATE = 0.5
-    EXPLORATION_DECAY_RATE = 0.999
+    EXPLORATION_DECAY_RATE = 0.9996
     ACTIONS = [0.1, 0.5, 1, 2, 7]
     BASELINE_ACTIONS = [0.5, 1, 2, 3, 4, 5, 6, 7]
 
@@ -122,8 +122,11 @@ if __name__ == "__main__":
     N_HIDDEN_2 = 64
     BATCH_SIZE = 16
     BUFFER_SIZE = 200
+    N_EPISODES = 200
+    EXPLORATION_RATE_FINAL = 0.01
+
     dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[1],
-                                              experiment_name="dqn_best")
+                                              experiment_name="dqn_best_long")
 
     # TARGET_UPDATE = 25
     # dqn_target_experiment(stoch_folder, env_entry_point=stoch_env, ws_s=[4],
