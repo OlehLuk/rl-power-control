@@ -11,6 +11,7 @@ FIRST_P = 1.2
 
 
 def report_experiment_summary(title, mses, perfs, sigs, labels, plot_interval_sigma=-1):
+    figsize(9,6)
     styles = ['r--', 'y-.', 'k', 'b.']
     color = ['r', 'y', 'k', 'b']
     for i, mse in enumerate(mses):
