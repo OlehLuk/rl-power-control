@@ -67,15 +67,15 @@ def mse_vs_ref(labels, bas_folders, contr_folders, palette=["c", "lightgray"], f
     
     for i in range(len(labels)):
         perfs_c = pd.read_csv("{}/exploit_performance.csv".format(contr_folders[i]), header=None).values.flatten()
-        df_temp_c = pd.DataFrame(data={y_label:perfs_c, group_label:"RL controller", x_label:labels[i]})
+        df_temp_c = pd.DataFrame(data={y_label:perfs_c, group_label:"RL-driven controller", x_label:labels[i]})
         perfs_b = pd.read_csv("{}/mses.csv".format(bas_folders[i]), header=None).values.flatten()
-        df_temp_b = pd.DataFrame(data={y_label:perfs_b, group_label:"Constant control", x_label:labels[i]})
+        df_temp_b = pd.DataFrame(data={y_label:perfs_b, group_label:"Optimal constant control", x_label:labels[i]})
         df = pd.concat([df, df_temp_c, df_temp_b])
     
     sns.boxplot(data=df, x=x_label, y=y_label, hue=group_label, palette=palette)
     return bas_mses, contr_mses
 
-def perf_box_plots(labels, bas_folders, contr_folders, color='lightgray', fig_size=(9, 6), y_label = 'Performance (MSE)', x_label = 'Reference power'):
+def perf_box_plots(labels, bas_folders, contr_folders, color='lightgray', fig_size=(9, 6), y_label = 'Performance (MSE)', x_label = 'Reference power level'):
     fig_x, fig_y = fig_size
     figsize(fig_x, fig_y)
     
@@ -91,7 +91,7 @@ def perf_box_plots(labels, bas_folders, contr_folders, color='lightgray', fig_si
         
     for i in range(len(bas_folders)):
         perfs_b = pd.read_csv("{}/mses.csv".format(bas_folders[i]), header=None).values.flatten()
-        df_temp_b = pd.DataFrame(data={y_label:perfs_b, x_label:"Constant"})
+        df_temp_b = pd.DataFrame(data={y_label:perfs_b, x_label:"Optimal constant control"})
         df = pd.concat([df, df_temp_b])
     
     sns.boxplot(data=df, x=x_label, y=y_label, color=color)
@@ -131,9 +131,9 @@ def perf_viol_split(labels, bas_folders, contr_folders, palette=["c", "lightgray
     
     for i in range(len(labels)):
         perfs_c = pd.read_csv("{}/exploit_performance.csv".format(contr_folders[i]), header=None).values.flatten()
-        df_temp_c = pd.DataFrame(data={y_label:perfs_c, group_label:"RL controller", x_label:labels[i]})
+        df_temp_c = pd.DataFrame(data={y_label:perfs_c, group_label:"RL-driven controller", x_label:labels[i]})
         perfs_b = pd.read_csv("{}/mses.csv".format(bas_folders[i]), header=None).values.flatten()
-        df_temp_b = pd.DataFrame(data={y_label:perfs_b, group_label:"Constant control", x_label:labels[i]})
+        df_temp_b = pd.DataFrame(data={y_label:perfs_b, group_label:"Optimal constant control", x_label:labels[i]})
         df = pd.concat([df, df_temp_c, df_temp_b])
     
     sns.violinplot(data=df, x=x_label, y=y_label, hue=group_label, palette=palette, split=True)
@@ -172,12 +172,12 @@ def report_const_experiment(name, old=False, fig_size=(12, 20)):
     for i, subf in enumerate(subfolder_names):
         plt.subplot(n_variations, 1, i + 1)
         if not old:
-            plt.plot(df_us[i].index.values, df_us[i].iloc[:, 0].values, 'red', label="Actual power")
-            plt.plot(df_us[i].index.values, df_ps[i].iloc[:, 0].values, 'gray', label="Reference power")
+            plt.plot(df_us[i].index.values, df_us[i].iloc[:, 0].values, 'red', label="Actual power level")
+            plt.plot(df_us[i].index.values, df_ps[i].iloc[:, 0].values, 'gray', label="Reference power level")
         else:
             index = list(range(df_us[i].index.shape[0] + 1))
-            plt.plot(index, np.insert(df_us[i].iloc[:, 0].values, 0, FIRST_U), 'red', label="Actual power")
-            plt.plot(index, np.insert(df_ps[i].iloc[:, 0].values, 0, FIRST_P), 'gray', label="Reference power")
+            plt.plot(index, np.insert(df_us[i].iloc[:, 0].values, 0, FIRST_U), 'red', label="Actual power level")
+            plt.plot(index, np.insert(df_ps[i].iloc[:, 0].values, 0, FIRST_P), 'gray', label="Reference power level")
 
         avg_mse = df_mses[i].mean()[0]
         std_mse = df_mses[i].std()[0]
@@ -220,12 +220,12 @@ def plot_sys_behaviour(name, n_runs=5, steps=[0, -1], old=False, fig_size=(15, 2
             index = list(range(df_us[i].index.shape[0] + 1))
             plt.subplot(n_runs, len(steps), len(steps) * i + j + 1)
             if old:
-                plt.plot(index, np.insert(df_us[i].iloc[:, step].values, 0, FIRST_U), 'red', label="Actual power")
+                plt.plot(index, np.insert(df_us[i].iloc[:, step].values, 0, FIRST_U), 'red', label="Actual power level")
                 plt.plot(index, np.insert(df_ps[i].iloc[:, step].values, 0, FIRST_P), 'gray',
-                         label="Reference power")
+                         label="Reference power level")
             else:
-                plt.plot(df_us[i].index.values, df_us[i].iloc[:, step].values, 'red', label="Actual power")
-                plt.plot(df_us[i].index.values, df_ps[i].iloc[:, step].values, 'gray', label="Reference power")
+                plt.plot(df_us[i].index.values, df_us[i].iloc[:, step].values, 'red', label="Actual power level")
+                plt.plot(df_us[i].index.values, df_ps[i].iloc[:, step].values, 'gray', label="Reference power level")
             if step != -1:
                 plt.title("Training step #{}. MSE={}".format(step, df_mses.iloc[step, i]))
             else:
@@ -244,12 +244,12 @@ def plot_agent_sys_exploit_behaviour(name, n_runs=5, old=False, fig_size=(15, 20
         plt.subplot(n_runs, 2, 2 * i + 1)
         if old:
             index = list(range(df_us[i].index.shape[0] + 1))
-            plt.plot(index, np.insert(df_us[i].iloc[:, -1].values, 0, FIRST_U), 'red', label="Actual power")
+            plt.plot(index, np.insert(df_us[i].iloc[:, -1].values, 0, FIRST_U), 'red', label="Actual power level")
             plt.plot(index, np.insert(df_ps[i].iloc[:, -1].values, 0, FIRST_P), 'gray',
-                     label="Reference power")
+                     label="Reference power level")
         else:
-            plt.plot(df_us[i].index.values, df_us[i].iloc[:, -1].values, 'red', label="Actual power")
-            plt.plot(df_us[i].index.values, df_ps[i].iloc[:, -1].values, 'gray', label="Reference power")  
+            plt.plot(df_us[i].index.values, df_us[i].iloc[:, -1].values, 'red', label="Actual power level")
+            plt.plot(df_us[i].index.values, df_ps[i].iloc[:, -1].values, 'gray', label="Reference power level")  
         plt.title("Last training step system behaviour. MSE={}".format(df_mses.iloc[-1, i]))
         
         plt.subplot(n_runs, 2, 2 * i + 2)
@@ -281,6 +281,7 @@ def plot_two_perf_dist(baseline, controller, fig_size=(12, 25)):
     y = pd.read_csv(baseline + "/mses.csv", header=None)[0].values
     y_mean = y.mean()
     y_std = y.std()
+    y_median = np.median(y)
     n = x.shape[1]
     for i in range(n):
         plt.subplot(n+1, 1, i+1)
@@ -290,21 +291,23 @@ def plot_two_perf_dist(baseline, controller, fig_size=(12, 25)):
         plt.title("Agent performance: mean={:.4f}, std={:.4f} \n Constant control performance:  mean={:.4f}, std={:.4f}".format(
             x_mean, x_std, y_mean, y_std))
         ax = sns.distplot(x[i].values, color='red', label="Agent#{}".format(i+1))
-        sns.distplot(y, ax=ax, color='gray', label="Constant control")
+        sns.distplot(y, ax=ax, color='gray', label="Optimal constant control")
         ax.legend()
     
     plt.subplot(n+1, 1, n+1)
     performance = np.mean(x.mean(axis=0))
     sigma = np.mean(x.std(axis=0))
-    ax = sns.distplot(x.values.flatten(), color='red', label="Controller")
-    plt.title("Summarized agents performance.\nAgent performance: mean={:.4f}, std={:.4f} \n Constant control performance:  mean={:.4f}, std={:.4f}".format(
-            performance, sigma, y_mean, y_std))
-    sns.distplot(y, ax=ax, color='gray', label="Constant control", axlabel="Performance (MSE)")
+    median = np.median(x.values.flatten())
+    
+    
+    ax = sns.distplot(x.values.flatten(), color='red', label="RL-driven controller")
+    plt.title("Summarized agents performance.\nRL-driven controller: median={:.4f}, mean={:.4f}, std={:.4f} \n Optimal constant control:  median={:.4f}, mean={:.4f}, std={:.4f}".format(median, performance, sigma, y_median, y_mean, y_std))
+    sns.distplot(y, ax=ax, color='gray', label="Optimal constant control", axlabel="Performance (MSE)")
     ax.legend()
     return 
 
 
-def plot_perf_dist(baseline, controllers, labels, fig_size=(12, 25)):
+def plot_perf_dist(baseline, controllers, labels, fig_size=(12, 25), x_label=""):
     fig_x, fig_y = fig_size
     figsize(fig_x, fig_y)
     x = [pd.read_csv(controller + "/exploit_performance.csv", header=None) for controller in controllers]
@@ -321,16 +324,16 @@ def plot_perf_dist(baseline, controllers, labels, fig_size=(12, 25)):
         x_std = [x_i[i].std() for x_i in x]
         plt.title("Constant control performance:  mean={:.4f}, std={:.4f}".format(y_mean, y_std))
         
-        ax = sns.distplot(y, color='gray', label="Constant control")
-        
+        ax = sns.distplot(y, color='gray', label="Optimal constant control")
         for j, x_i in enumerate(x):
             sns.distplot(x_i[i].values, ax=ax, label="{} Agent#{}".format(labels[j], i+1))
         ax.legend()
+        ax.set_xlabel(x_label)
     
     plt.subplot(n+1, 1, n+1)
     performance = [np.mean(x_i.mean(axis=0)) for x_i in x]
     sigma = [np.mean(x_i.std(axis=0)) for x_i in x]
-    ax = sns.distplot(y, color='gray', label="Constant control", axlabel="Performance (MSE)")
+    ax = sns.distplot(y, color='gray', label="Optimal constant control", axlabel="Performance (MSE)")
     
     for j, x_i in enumerate(x):
         sns.distplot(x_i[i].values, ax=ax, label="{}".format(labels[j]))
